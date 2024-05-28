@@ -1,2 +1,2 @@
 # AIToolsBox
-AI services all in a box !
+Simple AI services all in a box !
