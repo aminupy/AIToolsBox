@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+databases
+pydantic
+pydantic-settings
+psycopg2-binary
+redis
+python-jose
