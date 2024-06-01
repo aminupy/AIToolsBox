@@ -1,6 +1,27 @@
 version: '3.8'
 
 services:
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true"  # Enable Traefik dashboard
+      - "--providers.docker=true"  # Enable Docker provider
+      - "--entrypoints.web.address=:80"  # Define HTTP entrypoint
+      - "--entrypoints.websecure.address=:443"  # Define HTTPS entrypoint
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"  # Enable TLS challenge for Let's Encrypt
+      - "--certificatesresolvers.myresolver.acme.email=esaminu.py@gmail.com"  # Email for Let's Encrypt notifications
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"  # Storage for certificates
+    ports:
+      - "80:80"  # Expose HTTP port
+      - "443:443"  # Expose HTTPS port
+      - "8080:8080"  # Expose Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"  # Docker socket for service discovery
+      - "./letsencrypt:/letsencrypt"  # Volume for certificates storage
+    networks:
+      - my-network
+
   postgres:
     container_name: postgres_container
     image: postgres
@@ -18,18 +39,6 @@ services:
     expose:
       - 5432
 
-
-  redis:
-    image: redis
-    container_name: redis
-    command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./data:/data
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
-
-
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
@@ -45,6 +54,39 @@ services:
       - my-network
     restart: unless-stopped
 
+  redis:
+    image: redis
+    container_name: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  iam:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+
+    container_name: iam_service
+    networks:
+      - my-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.iam.rule=Host(`iam.localhost`)"
+      - "traefik.http.services.iam.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - redis
+      - traefik
+
+
 networks:
   my-network:
     driver: bridge
@@ -52,3 +94,4 @@ networks:
 volumes:
   postgres:
   pgadmin:
+#  letsencrypt:
