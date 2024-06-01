@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, TIMESTAMP
+from sqlalchemy import Column, String, TIMESTAMP, Boolean
 from app.core.db.database import get_entitybase
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import UUID
@@ -23,5 +23,6 @@ class User(EntityBase):
     mobile_number = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    is_verified = Column(Boolean, nullable=False, default=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True, default=None, onupdate=func.now())

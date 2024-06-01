@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     OTP_EXPIRE_TIME: int = 60
 
-    model_config = SettingsConfigDict(env_file='./.env')
+    model_config = SettingsConfigDict(env_file='app/.env')
 
 
 @lru_cache
