@@ -17,8 +17,8 @@ class MediaRepository:
         media.mongo_id = result.inserted_id
         return media
 
-    async def get_media(self, media_id: str) -> MediaGridFSModel:
-        media = await self.collection.find_one({"_id": ObjectId(media_id)})
+    async def get_media(self, media_id: ObjectId) -> MediaGridFSModel:
+        media = await self.collection.find_one({"_id": media_id})
         return (
             MediaGridFSModel(
                 mongo_id=str(media["_id"]),

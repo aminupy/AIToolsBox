@@ -1,9 +1,11 @@
 from datetime import datetime
+from typing import Annotated
 
 from bson import ObjectId
 from pydantic import BaseModel
 
 from app.domain.models.media_model import MediaModel
+from app.domain.models.object_id_model import ObjectIdPydanticAnnotation
 
 
 class MediaSchema(MediaModel):
@@ -16,4 +18,4 @@ class MediaSchema(MediaModel):
 
 
 class MediaGetSchema(BaseModel):
-    mongo_id: str
+    mongo_id: Annotated[ObjectId, ObjectIdPydanticAnnotation]

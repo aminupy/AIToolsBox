@@ -1,3 +1,4 @@
+from bson import ObjectId
 from fastapi import Depends, UploadFile, HTTPException, status
 
 from typing import Annotated, Generator, Callable, Any
@@ -41,14 +42,14 @@ class MediaService:
         )
 
     async def get_media(
-        self, media_id: str
+        self, media_id: ObjectId
     ) -> tuple[MediaSchema, Callable[[], Generator[Any, Any, None]]]:
         media = await self.media_repository.get_media(media_id)
-        file = await self.storage.get_file(media.storage_id)
-        if not media or not file:
+        if not media:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Media not found"
             )
+        file = await self.storage.get_file(media.storage_id)
 
         def file_stream():
             yield file
