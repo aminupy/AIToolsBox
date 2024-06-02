@@ -34,8 +34,8 @@ class RegisterService(BaseService):
         existing_mobile_number = await self.user_service.get_user_by_mobile_number(
             user.mobile_number
         )
-        existing_email = await self.user_service.get_user_by_email(user.email)
-        if existing_mobile_number or existing_email:
+
+        if existing_mobile_number:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
             )
@@ -63,7 +63,7 @@ class RegisterService(BaseService):
             verify_user_schema.mobile_number
         )
 
-        user = await self.user_service.update_user(user.id, {"is_verified": True})
+        await self.user_service.update_user(user.id, {"is_verified": True})
 
         return VerifyOTPResponseSchema(
             verified=True, message="User verified successfully"
@@ -79,6 +79,17 @@ class RegisterService(BaseService):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
             )
+
+        if existing_user.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="User already verified"
+            )
+
+        if self.otp_service.check_exist(resend_otp_schema.mobile_number):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="OTP already exists"
+            )
+
         otp = self.otp_service.send_otp(resend_otp_schema.mobile_number)
         return ResendOTPResponseSchema(
             mobile_number=resend_otp_schema.mobile_number,

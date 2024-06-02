@@ -22,7 +22,6 @@ class User(EntityBase):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     mobile_number = Column(String, unique=True, nullable=False)
-    email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_verified = Column(Boolean, nullable=False, default=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())

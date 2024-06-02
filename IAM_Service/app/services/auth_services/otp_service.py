@@ -28,3 +28,7 @@ class OTPService(BaseService):
     def verify_otp(self, mobile_number: str, otp: str) -> bool:
         stored_otp = self.redis_client.get(mobile_number)
         return stored_otp is not None and stored_otp == otp
+
+    def check_exist(self, mobile_number: str) -> bool:
+        stored_otp = self.redis_client.get(mobile_number)
+        return stored_otp is not None

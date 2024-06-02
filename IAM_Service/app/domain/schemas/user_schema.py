@@ -10,7 +10,6 @@ from app.domain.schemas.token_schema import TokenSchema
 class UserBaseSchema(BaseModel):
     first_name: str
     last_name: str
-    email: EmailStr
     mobile_number: str = Field(..., pattern=r"^\+?[1-9]\d{1,14}$")
 
 
