@@ -1,0 +1,12 @@
+fastapi
+pymongo
+motor
+gridfs
+python-multipart
+
+
+pydantic
+passlib
+redis
+PyJWT
+SQLAlchemy
