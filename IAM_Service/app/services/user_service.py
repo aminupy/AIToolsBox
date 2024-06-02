@@ -1,10 +1,11 @@
-from fastapi import Depends
 from typing import Annotated, Dict
 from uuid import UUID
 
-from app.infrastructure.repositories.user_repository import UserRepository
-from app.domain.schemas.user_schema import UserCreateSchema
+from fastapi import Depends
+
 from app.domain.models.user import User
+from app.domain.schemas.user_schema import UserCreateSchema
+from app.infrastructure.repositories.user_repository import UserRepository
 from app.services.auth_services.hash_sevice import HashService
 from app.services.base_service import BaseService
 

@@ -1,12 +1,6 @@
-from typing import Annotated, Tuple, Dict
-from fastapi import Depends, HTTPException, status
-from redis import Redis
-import random
+from typing import Annotated
 
-from app.services.base_service import BaseService
-from app.services.user_service import UserService
-from app.services.auth_services.otp_service import OTPService
-from app.services.auth_services.auth_service import AuthService, get_current_user
+from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.user_schema import (
     UserCreateSchema,
@@ -17,8 +11,10 @@ from app.domain.schemas.user_schema import (
     ResendOTPSchema,
     ResendOTPResponseSchema,
 )
-from app.domain.schemas.token_schema import TokenSchema
-from app.domain.models.user import User
+from app.services.auth_services.auth_service import AuthService
+from app.services.auth_services.otp_service import OTPService
+from app.services.base_service import BaseService
+from app.services.user_service import UserService
 
 
 class RegisterService(BaseService):

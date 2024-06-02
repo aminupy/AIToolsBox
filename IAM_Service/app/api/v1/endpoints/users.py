@@ -1,12 +1,9 @@
-from typing import Annotated
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
+from typing import Annotated
 
 from app.domain.models.user import User
-from app.services.user_service import UserService
-from app.services.auth_services.auth_service import AuthService, get_current_user
-from app.services.register_service import RegisterService
-
+from app.domain.schemas.token_schema import TokenSchema, TokenDataSchema
 from app.domain.schemas.user_schema import (
     UserCreateSchema,
     UserCreateResponseSchema,
@@ -17,7 +14,9 @@ from app.domain.schemas.user_schema import (
     ResendOTPSchema,
     ResendOTPResponseSchema,
 )
-from app.domain.schemas.token_schema import TokenSchema, TokenDataSchema
+from app.services.auth_services.auth_service import AuthService, get_current_user
+from app.services.register_service import RegisterService
+from app.services.user_service import UserService
 
 user_router = APIRouter()
 

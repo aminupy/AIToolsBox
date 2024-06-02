@@ -1,6 +1,3 @@
-from typing import Annotated
-from fastapi import Depends
-
 from app.core.config import get_settings, Settings
 
 

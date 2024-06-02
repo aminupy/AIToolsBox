@@ -1,7 +1,8 @@
+from typing import Annotated, Dict
+from uuid import UUID
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from typing import Annotated, Type, Dict
-from uuid import UUID
 
 from app.core.db.database import get_db
 from app.domain.models.user import User

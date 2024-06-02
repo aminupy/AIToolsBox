@@ -1,16 +1,16 @@
-import jwt
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+import jwt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
+from app.domain.models.user import User
 from app.domain.schemas.token_schema import TokenSchema
 from app.domain.schemas.user_schema import UserLoginSchema
-from app.services.base_service import BaseService
 from app.services.auth_services.hash_sevice import HashService
+from app.services.base_service import BaseService
 from app.services.user_service import UserService
-from app.domain.models.user import User
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/users/Token")
 

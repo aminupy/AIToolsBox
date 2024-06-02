@@ -1,7 +1,8 @@
-from redis import Redis
 import random
 from typing import Annotated
+
 from fastapi import Depends
+from redis import Redis
 
 from app.core.redis.redis_client import get_redis_client
 from app.services.base_service import BaseService

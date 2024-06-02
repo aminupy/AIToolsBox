@@ -1,8 +1,9 @@
-from sqlalchemy import Column, String, TIMESTAMP, Boolean
-from app.core.db.database import get_entitybase
-from sqlalchemy.sql import func
-from sqlalchemy.dialects.postgresql import UUID
 from fastapi_restful.guid_type import GUID_SERVER_DEFAULT_POSTGRESQL
+from sqlalchemy import Column, String, TIMESTAMP, Boolean
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import func
+
+from app.core.db.database import get_entitybase
 
 EntityBase = get_entitybase()
 

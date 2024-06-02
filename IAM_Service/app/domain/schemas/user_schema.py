@@ -1,7 +1,9 @@
-from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field, EmailStr
+from typing import Optional
 from uuid import UUID
+
+from pydantic import BaseModel, Field, EmailStr
+
 from app.domain.schemas.token_schema import TokenSchema
 
 

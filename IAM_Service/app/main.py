@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.db.database import init_db
 from app.api.v1.endpoints.users import user_router
+from app.core.db.database import init_db
 
 init_db()
 app = FastAPI()
