@@ -1,10 +1,8 @@
-from typing import Annotated, Any
+from typing import Any
+
 from bson import ObjectId
-from pydantic_core import core_schema
-
-from pydantic import BaseModel
-
 from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import core_schema
 
 
 class ObjectIdPydanticAnnotation:
@@ -20,7 +18,9 @@ class ObjectIdPydanticAnnotation:
             raise ValueError("Invalid ObjectId")
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source_type, _handler) -> core_schema.CoreSchema:
+    def __get_pydantic_core_schema__(
+        cls, source_type, _handler
+    ) -> core_schema.CoreSchema:
         assert source_type is ObjectId
         return core_schema.no_info_wrap_validator_function(
             cls.validate_object_id,

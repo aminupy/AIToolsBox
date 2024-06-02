@@ -66,11 +66,19 @@ services:
     networks:
       - my-network
     restart: unless-stopped
+   
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
 
   iam:
     build:
       context: ./
-      dockerfile: ./Dockerfile
+      dockerfile: ./IAM_Service/Dockerfile
 
     container_name: iam_service
     networks:
@@ -86,6 +94,23 @@ services:
       - redis
       - traefik
 
+  media:
+    build:
+      context: ./
+      dockerfile: ./Media_Service/Dockerfile
+
+    container_name: media_service
+    networks:
+      - my-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.media.rule=Host(`media.localhost`)"
+      - "traefik.http.services.media.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+    depends_on:
+      - mongo
+      - traefik
 
 networks:
   my-network:

@@ -1,4 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+
 from app.core.config import get_settings
 
 config = get_settings()

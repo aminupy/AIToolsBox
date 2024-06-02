@@ -1,5 +1,6 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -7,7 +8,7 @@ class Settings(BaseSettings):
     DATABASE_NAME: str
     FILE_STORAGE_PATH: str
 
-    model_config = SettingsConfigDict(env_file='app/.env')
+    model_config = SettingsConfigDict(env_file="app/.env")
 
 
 @lru_cache
