@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from bson import ObjectId
 from fastapi import Depends, UploadFile, HTTPException, status
 
@@ -42,12 +44,18 @@ class MediaService:
         )
 
     async def get_media(
-        self, media_id: ObjectId
+        self, media_id: ObjectId, user_id: str
     ) -> tuple[MediaSchema, Callable[[], Generator[Any, Any, None]]]:
         media = await self.media_repository.get_media(media_id)
         if not media:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Media not found"
+            )
+
+        if media.user_id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not have permission to access this media",
             )
         file = await self.storage.get_file(media.storage_id)
 

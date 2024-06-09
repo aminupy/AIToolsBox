@@ -19,3 +19,4 @@ class MediaSchema(MediaModel):
 
 class MediaGetSchema(BaseModel):
     mongo_id: Annotated[ObjectId, ObjectIdPydanticAnnotation]
+    # mongo_id: str

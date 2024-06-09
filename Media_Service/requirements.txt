@@ -6,3 +6,6 @@ python-multipart
 
 pydantic
 pydantic-settings
+
+pydantic_core
+httpx
