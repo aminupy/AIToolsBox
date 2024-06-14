@@ -1,0 +1,17 @@
+fastapi
+pymongo
+motor
+grpcio
+grpcio-tools
+pytesseract
+opencv-python-headless
+
+pydantic
+pydantic_core
+
+
+python-multipart
+pydantic
+pydantic-settings
+pydantic_core
+httpx
