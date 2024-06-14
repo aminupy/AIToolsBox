@@ -12,11 +12,11 @@ class IAMClient:
         self.http_client = httpx.AsyncClient()
 
     async def validate_token(self, token: str) -> TokenDataSchema:
-        headers = {"Authorization": f"Bearer {token}", 'Host': 'iam'}
+        headers = {"Authorization": f"Bearer {token}"}
 
         try:
             response = await self.http_client.get(
-                f"{self.config.IAM_URL}/api/v1/users/Me",
+                f"{self.config.IAM_SERVICE_URL}/api/v1/users/Me",
                 headers=headers,
             )
             response.raise_for_status()
@@ -24,7 +24,7 @@ class IAMClient:
         except httpx.HTTPStatusError as e:
             raise HTTPException(
                 status_code=e.response.status_code,
-                detail=e.response.json(),
+                detail=e.response.json()["detail"],
             )
 
     async def __aenter__(self):

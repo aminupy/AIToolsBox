@@ -3,9 +3,10 @@ from uuid import UUID
 from bson import ObjectId
 from fastapi import Depends, UploadFile, HTTPException, status
 
-from typing import Annotated, Generator, Callable, Any
+from typing import Annotated, Generator, Callable, Any, Tuple
 
 from fastapi import Depends, UploadFile, HTTPException, status
+from motor.motor_asyncio import AsyncIOMotorGridOut
 
 from app.domain.models.media_model import MediaGridFSModel
 from app.domain.schemas.media_schema import MediaSchema
@@ -43,21 +44,25 @@ class MediaService:
             message="Media uploaded successfully",
         )
 
-    async def get_media(
-        self, media_id: ObjectId, user_id: str
-    ) -> tuple[MediaSchema, Callable[[], Generator[Any, Any, None]]]:
+    async def __get_media_model(self, media_id: ObjectId, user_id: str) -> Tuple[MediaGridFSModel, AsyncIOMotorGridOut]:
         media = await self.media_repository.get_media(media_id)
         if not media:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Media not found"
             )
-
         if media.user_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User does not have permission to access this media",
             )
         file = await self.storage.get_file(media.storage_id)
+
+        return media, file
+
+    async def get_media(
+        self, media_id: ObjectId, user_id: str
+    ) -> tuple[MediaSchema, Callable[[], Generator[Any, Any, None]]]:
+        media, file = await self.__get_media_model(media_id, user_id)
 
         def file_stream():
             yield file
@@ -74,3 +79,7 @@ class MediaService:
             ),
             file_stream,
         )
+
+    async def get_media_data(self, media_id: str, user_id: str) -> bytes:
+        _, file = await self.__get_media_model(ObjectId(media_id), user_id)
+        return file

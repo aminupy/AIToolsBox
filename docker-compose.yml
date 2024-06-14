@@ -107,10 +107,31 @@ services:
       - "traefik.http.routers.media.rule=Host(`media.localhost`)"
       - "traefik.http.services.media.loadbalancer.server.port=80"
     restart: unless-stopped
+    ports:
+      - "50051:50051" # grpc port
+    depends_on:
+      - mongo
+
+  ocr:
+    build:
+      context: ./
+      dockerfile: ./OCR_Service/Dockerfile
+
+    container_name: ocr_service
+    networks:
+      - my-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ocr.rule=Host(`ocr.localhost`)"
+      - "traefik.http.services.ocr.loadbalancer.server.port=80"
+    restart: unless-stopped
+
 
     depends_on:
       - mongo
       - traefik
+      - media
+      - iam
 
 networks:
   my-network:
