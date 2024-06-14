@@ -1,0 +1,189 @@
+.edit-profile {
+    background-color: #ede7e3;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.edit-profile .div {
+    background-color: #ede7e3;
+    border-radius: 5px;
+    height: 800px;
+    overflow: hidden;
+    position: relative;
+    width: 400px;
+}
+
+.edit-profile .profile-circle-icon {
+    height: 180px;
+    left: 26px;
+    position: absolute;
+    top: 35px;
+    width: 189px;
+}
+
+.edit-profile .text-wrapper {
+    color: #16697a;
+    font-family: "Outfit", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    height: 53px;
+    left: -27px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 233px;
+    width: 265px;
+}
+
+.edit-profile .text-wrapper-2 {
+    color: #16697a;
+    font-family: "Outfit", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    height: 53px;
+    left: -27px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 286px;
+    width: 265px;
+}
+
+.edit-profile .email {
+    color: #16697a;
+    font-family: "Outfit", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    height: 53px;
+    left: -64px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 339px;
+    width: 435px;
+}
+
+.edit-profile .span {
+    color: #16697a;
+    font-family: "Outfit", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.edit-profile .text-wrapper-3 {
+    color: #16697a;
+    font-family: "Outfit", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    height: 53px;
+    left: -112px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 392px;
+    width: 435px;
+}
+
+.edit-profile .button {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 26px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 465px;
+    width: 156px;
+}
+
+.edit-profile .text-wrapper-4 {
+    color: #ffffff;
+    font-family: "Poppins", Helvetica;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.edit-profile .delete-account-wrapper {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 26px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 539px;
+    width: 156px;
+}
+
+.edit-profile .delete-account {
+    color: #ffffff;
+    font-family: "Poppins", Helvetica;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-left: -15.5px;
+    margin-right: -15.5px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.edit-profile .cancel-wrapper {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 10px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 725px;
+    width: 155px;
+}
+
+.edit-profile .save-wrapper {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 230px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 725px;
+    width: 155px;
+}

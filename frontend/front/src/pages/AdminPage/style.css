@@ -1,0 +1,212 @@
+body {
+    background-image: url("C:\Users\nasta\OneDrive\Desktop\AiToolsBox\frontend\front\public\img\Intro Desktop.png");
+    background-repeat: no-repeat, repeat;
+    background-size: cover;
+    height: cover;
+}
+
+.adminpage {
+    background-color: #16697a;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.adminpage .overlap-wrapper {
+    background-color: #16697a;
+    height: 1024px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.adminpage .overlap {
+    height: 1919px;
+    left: -266px;
+    position: relative;
+    top: -81px;
+    width: 2009px;
+}
+
+.adminpage .vector-background {
+    height: 1919px;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    width: 2009px;
+    align-content: center;
+}
+
+.adminpage .overlap-group {
+    height: 1259px;
+    left: 0px;
+    position: relative;
+    width: 2009px;
+}
+
+.adminpage .img {
+    height: 64px;
+    left: 470px;
+    position: absolute;
+    top: 115px;
+    width: 148px;
+}
+
+.adminpage .buttons {
+    height: 64px;
+    left: 470px;
+    position: absolute;
+    top: 115px;
+    width: 148px;
+}
+
+.adminpage .AI {
+    color: #ffffff;
+    font-family: "Outfit", Helvetica;
+    font-size: 22px;
+    font-weight: 700;
+    height: 64px;
+    left: -150%;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: -100%;
+    width: 148px;
+}
+
+.adminpage .button {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 735px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 590px;
+    width: 345px;
+}
+
+.adminpage .button2 {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 735px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 830px;
+    width: 345px;
+}
+
+.adminpage .submit {
+    color: #ffffff;
+    font-family: "Outfit", Helvetica;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.adminpage .submit-wrapper {
+    all: unset;
+    align-items: center;
+    background-color: #ffa62b;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 32px;
+    height: 51px;
+    justify-content: center;
+    left: 800px;
+    padding: 10px 32px;
+    position: absolute;
+    top: 899px;
+    width: 345px;
+}
+
+.adminpage .group {
+    background-color: #ffffff;
+    border-radius: 8px;
+    height: 79px;
+    left: 440px;
+    position: absolute;
+    top: 500px;
+    width: 915px;
+}
+
+.adminpage .upload-image{
+    background-color: #ffffff;
+    border-radius: 8px;
+    height: 59px;
+    left: 9px;
+    position: absolute;
+    top: 11px;
+    width: 896px;
+}
+
+.adminpage .upload-image-wrapper {
+    background-color: #ffffff;
+    border-radius: 8px;
+    height: 79px;
+    left: 440px;
+    position: absolute;
+    top: 740px;
+    width: 915px;
+}
+
+.adminpage .text-wrapper {
+    color: #ede7e3;
+    font-family: "Poppins", Helvetica;
+    font-size: 60px;
+    font-weight: 700;
+    left: 700px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 291px;
+    white-space: nowrap;
+}
+
+.adminpage .change-title {
+    color: #ffffff;
+    font-family: "outfit", Helvetica;
+    font-size: 24px;
+    font-weight: 600;
+    left: -290px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 170px;
+    width: 392px;
+}
+
+.adminpage .change-text {
+    color: #ffffff;
+    font-family: "outfit", Helvetica;
+    font-size: 24px;
+    font-weight: 600;
+    left: -290px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 400px;
+    width: 471px;
+}
