@@ -5,7 +5,7 @@ from app.api.v1.endpoints.media import media_router
 
 app = FastAPI()
 
-origins = ["http://localhost:3000"]
+origins = ["http://localhost", "http://ocr"]
 
 app.add_middleware(
     CORSMiddleware,

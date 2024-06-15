@@ -7,7 +7,7 @@ from app.core.db.database import init_db
 init_db()
 app = FastAPI()
 
-origins = ["http://localhost:3000"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,

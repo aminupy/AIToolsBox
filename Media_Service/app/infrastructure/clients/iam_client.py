@@ -12,7 +12,7 @@ class IAMClient:
         self.http_client = httpx.AsyncClient()
 
     async def validate_token(self, token: str) -> TokenDataSchema:
-        headers = {"Authorization": f"Bearer {token}", 'Host': 'iam'}
+        headers = {"Authorization": f"Bearer {token}"}
 
         try:
             response = await self.http_client.get(

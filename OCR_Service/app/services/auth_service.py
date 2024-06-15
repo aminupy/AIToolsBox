@@ -9,16 +9,18 @@ from app.core.config import get_settings
 
 config = get_settings()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='http://iam.localhost/api/v1/users/Token')
+
 
 async def get_current_user(
-    request: Request, client: Annotated[IAMClient, Depends()]
+    token: Annotated[str, Depends(oauth2_scheme)], client: Annotated[IAMClient, Depends()]
 ) -> TokenDataSchema:
-    token = request.headers.get("Authorization")
-    if not token or not token.startswith("Bearer "):
+
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized",
         )
 
     async with client:
-        return await client.validate_token(token.split("Bearer ")[1])
+        return await client.validate_token(token)
