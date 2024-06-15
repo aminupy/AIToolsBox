@@ -43,7 +43,10 @@ class MediaServiceServicer(media_pb2_grpc.MediaServiceServicer):
 
 
 async def serve():
-    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10))
+    options = [('grpc.max_message_length', 100 * 1024 * 1024),
+               ('grpc.max_receive_message_length', 100 * 1024 * 1024),
+               ('grpc.max_send_message_length', 100 * 1024 * 1024)]
+    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10), options=options)
     media_pb2_grpc.add_MediaServiceServicer_to_server(
         MediaServiceServicer(MediaService(
             MediaRepository(db), GridFsStorage(db)
