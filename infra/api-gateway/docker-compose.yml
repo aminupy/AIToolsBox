@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true"  # Enable Traefik dashboard
+      - "--providers.docker=true"  # Enable Docker provider
+      - "--entrypoints.web.address=:80"  # Define HTTP entrypoint
+      - "--entrypoints.websecure.address=:443"  # Define HTTPS entrypoint
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"  # Enable TLS challenge for Let's Encrypt
+      - "--certificatesresolvers.myresolver.acme.email=esaminu.py@gmail.com"  # Email for Let's Encrypt notifications
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"  # Storage for certificates
+    ports:
+      - "80:80"  # Expose HTTP port
+      - "443:443"  # Expose HTTPS port
+      - "8080:8080"  # Expose Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"  # Docker socket for service discovery
+      - "./letsencrypt:/letsencrypt"  # Volume for certificates storage
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+    letsencrypt:
+        driver: local
