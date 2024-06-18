@@ -9,6 +9,11 @@ export default function OCR() {
   const [warning, setWarning] = useState("");
   const [receivedText, setReceivedText] = useState("");
 
+  // Function to get the token from localStorage
+  const getTokenFromLocalStorage = () => {
+    return localStorage.getItem("accessToken"); // Ensure the key matches what you store in localStorage
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: async (acceptedFiles, rejectedFiles) => {
@@ -27,6 +32,7 @@ export default function OCR() {
             {
               headers: {
                 "Content-Type": "multipart/form-data",
+                "Authorization": `Bearer ${getTokenFromLocalStorage()}`,
               },
             }
           );
@@ -40,11 +46,12 @@ export default function OCR() {
             {
               headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${getTokenFromLocalStorage()}`,
               },
             }
           );
 
-          setReceivedText(ocrResponse.data.text);
+          setReceivedText(ocrResponse.data.message); // Assuming the message field contains the OCR result
         } catch (error) {
           console.error(error);
           setWarning("An error occurred while processing the image.");
