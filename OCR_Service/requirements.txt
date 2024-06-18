@@ -15,3 +15,7 @@ pydantic
 pydantic-settings
 pydantic_core
 httpx
+
+pillow
+tenacity
+aiobreaker

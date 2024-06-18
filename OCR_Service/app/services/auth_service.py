@@ -9,11 +9,12 @@ from app.core.config import get_settings
 
 config = get_settings()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='http://iam.localhost/api/v1/users/Token')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://iam.localhost/api/v1/users/Token")
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)], client: Annotated[IAMClient, Depends()]
+    token: Annotated[str, Depends(oauth2_scheme)],
+    client: Annotated[IAMClient, Depends()],
 ) -> TokenDataSchema:
 
     if not token:
@@ -22,5 +23,4 @@ async def get_current_user(
             detail="Unauthorized",
         )
 
-    async with client:
-        return await client.validate_token(token)
+    return await client.validate_token(token)

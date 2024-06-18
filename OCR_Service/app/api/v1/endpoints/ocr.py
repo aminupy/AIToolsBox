@@ -26,6 +26,8 @@ async def process_image(
     "/get_ocr_result", response_model=OCRResponse, status_code=status.HTTP_200_OK
 )
 async def get_ocr_result(
-    ocr_request: OCRRequest, ocr_service: Annotated[OCRService, Depends()]
+    ocr_request: OCRRequest,
+    current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+    ocr_service: Annotated[OCRService, Depends()]
 ):
-    return await ocr_service.get_ocr_result(ocr_request)
+    return await ocr_service.get_ocr_result(ocr_request, current_user.id)

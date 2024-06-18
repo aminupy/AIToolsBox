@@ -28,24 +28,9 @@ class GridFsStorage:
         )
         await grid_in.write(await file.read())
         await grid_in.close()
-        await self.print_all_ids()
         return grid_in._id
 
     async def get_file(self, file_id: ObjectId) -> AsyncIOMotorGridOut:
         await self.init_fs()
         file_obj = await self.fs.open_download_stream(file_id)
         return await file_obj.read()
-
-    async def print_all_ids(self):
-        await self.init_fs()
-        async for file in self.fs.find({}):
-            print(file._id)
-
-
-if __name__ == "__main__":
-
-    async def main():
-        storage = GridFsStorage(db)
-        await storage.print_all_ids()
-
-    asyncio.run(main())

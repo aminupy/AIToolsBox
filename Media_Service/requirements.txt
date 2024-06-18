@@ -8,3 +8,5 @@ pydantic
 pydantic-settings
 pydantic_core
 httpx
+tenacity
+aiobreaker

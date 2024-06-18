@@ -25,7 +25,7 @@ class OCRService:
         self.media_client = media_client
 
     async def process_image(self, ocr_create: OCRCreateRequest, user_id: str) -> OCRCreateResponse:
-        image_data = await self.media_client.download_media(ocr_create.image_id, 'image', user_id)
+        image_data = await self.media_client.request_media(ocr_create.image_id, 'image', user_id)
         image = Image.open(BytesIO(image_data))
         extracted_text = pytesseract.image_to_string(image)
 
@@ -37,8 +37,10 @@ class OCRService:
         ocr_model = await self.ocr_repository.create_ocr(ocr_result)
         return OCRCreateResponse(**ocr_model.dict())
 
-    async def get_ocr_result(self, ocr_request: OCRRequest) -> OCRResponse:
+    async def get_ocr_result(self, ocr_request: OCRRequest, user_id: str) -> OCRResponse:
         ocr = await self.ocr_repository.get_media(ocr_request.ocr_id)
         if not ocr:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="OCR not found")
+        if ocr.user_id != user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not have permission to access this OCR")
         return OCRResponse(**ocr.dict())
