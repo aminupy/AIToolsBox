@@ -7,7 +7,6 @@ import "./style.css";
 export default function OCR() {
   const [files, setFiles] = useState([]);
   const [warning, setWarning] = useState("");
-
   const [receivedText, setReceivedText] = useState("");
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -17,29 +16,35 @@ export default function OCR() {
       if (rejectedFiles.length > 0) {
         setWarning("Only image files are allowed.");
       } else if (acceptedFiles.length > 0) {
-
-        const token = localStorage.getItem("accessToken");
-        console.log("Token:", token);
-
         const formData = new FormData();
         formData.append("file", acceptedFiles[0]);
-        console.log("FormData:", formData);
 
         try {
-          const response = await axios.post(
-            "http://localhost:80/api/ocr/",
+          // Upload media to get mongo_id
+          const uploadResponse = await axios.post(
+            "http://media.localhost/api/v1/media/UploadMedia",
             formData,
             {
               headers: {
                 "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
               },
             }
           );
 
-          console.log("Response:", response);
+          const mongoId = uploadResponse.data.mongo_id;
 
-          setReceivedText(response.data.text);
+          // Process OCR with mongo_id
+          const ocrResponse = await axios.post(
+            "http://ocr.localhost/api/v1/ocr/process",
+            { image_id: mongoId },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          setReceivedText(ocrResponse.data.text);
         } catch (error) {
           console.error(error);
           setWarning("An error occurred while processing the image.");
