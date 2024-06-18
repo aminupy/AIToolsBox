@@ -5,7 +5,7 @@ from app.api.v1.endpoints.ocr import ocr_router
 
 app = FastAPI()
 
-origins = ["http://localhost:3000"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
