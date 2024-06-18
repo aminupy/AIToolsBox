@@ -8,12 +8,14 @@ import Profile from "./pages/Profile/Profile";
 import AdminPage from "./pages/AdminPage/AdminPage";
 import AdminLogin from "./pages/AdminLogin/AdminLogin";
 import AdminCreateAccount from "./pages/AdminCreateAccount/AdminCreateAccount";
+import Otp from "./pages/CreateAccount/otp";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<CreateAccount />} />
+        <Route path="/Otp" element={<Otp />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/MainPage" element={<MainPage />} />
         <Route path="/OCR" element={<OCR />} />

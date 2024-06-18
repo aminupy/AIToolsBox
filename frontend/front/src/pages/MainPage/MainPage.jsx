@@ -3,20 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./style.css";
 
 export default function MainPage() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch('http://localhost:80/api/config')
-      .then(response => response.json())
-      .then(data => {
-        setTitle(data.FrontendConfig.title);
-        setDescription(data.FrontendConfig.description);
-      })
-      .catch(error => console.error('Error:', error));
-}, []);
-
 
   return (
     <div className="overflow-hidden flex flex-wrap justify-center w-full">
@@ -179,7 +166,7 @@ export default function MainPage() {
                   </button>
                   <div className="h-[385px] left-[0] absolute top-[0] w-[1046px]">
                     <div className="text-[#ede7e3] font-inter text-[60px] font-bold left-[0] tracking-[0] leading-[normal] absolute text-center top-[34px] whitespace-nowrap">
-                      {title}
+                      Wide Range Of Tools
                     </div>
                     <img
                       className="h-[385px] lg:left-[523px] md:left-[300px] left-[130px] object-cover absolute lg:top-[0] md:top-[200px] top-[300px] w-[523px]"
@@ -188,7 +175,8 @@ export default function MainPage() {
                     />
                   </div>
                   <p className="text-[#82c0cc] font-inter text-[18px] font-medium left-[0] tracking-[0] leading-[normal] absolute top-[142px] w-[423px]">
-                    {description}
+                    we give you access to a full range of tools. carefully
+                    designed to be intuitive, engaging, and secure.
                   </p>
                 </div>
               </div>

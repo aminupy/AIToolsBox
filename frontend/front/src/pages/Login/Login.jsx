@@ -1,50 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./style.css";
 
-export default function CreateAccount() {
+export default function Login() {
   const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [formState, setFormState] = useState("sendCode");
-  const [generatedCode, setGeneratedCode] = useState(null);
-  const [countdown, setCountdown] = useState(60);
   const [phoneError, setPhoneError] = useState("");
-  const [codeGenerated, setCodeGenerated] = useState(false);
-
-  useEffect(() => {
-    let timer;
-
-    if (formState === "sendCode" && !codeGenerated) {
-      setCountdown(60);
-      const code = Math.floor(1000 + Math.random() * 9000);
-      setGeneratedCode(code);
-      console.log(`Generated Code: ${code}`);
-      setCodeGenerated(true);
-
-      timer = setInterval(() => {
-        setCountdown((prevCountdown) => {
-          if (prevCountdown <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prevCountdown - 1;
-        });
-      }, 1000);
-    } else if (formState === "createAccount") {
-      timer = setInterval(() => {
-        setCountdown((prevCountdown) => {
-          if (prevCountdown <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prevCountdown - 1;
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(timer);
-  }, [formState, codeGenerated]);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -56,13 +18,14 @@ export default function CreateAccount() {
   };
 
   const isValidPhoneNumber = (number) => {
-    const regex = /^09\d{9}$/;
+    const regex = /^\+?[1-9]\d{1,14}$/;
     return regex.test(number);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if ( !phoneNumber) {
+
+    if (!phoneNumber || !password) {
       console.log("Please fill all required fields.");
       return;
     }
@@ -70,28 +33,41 @@ export default function CreateAccount() {
       console.log("Invalid phone number.");
       return;
     }
-    if (formState === "sendCode") {
-      const code = Math.floor(1000 + Math.random() * 9000);
-      setGeneratedCode(code);
-      console.log(`Generated Code: ${code}`);
-      setFormState("createAccount");
-    } else if (formState === "createAccount") {
-      if (countdown <= 0) {
-        console.log("Time limit has passed. Please request a new code.");
-        setFormState("sendCode");
-        setCodeGenerated(false);
-        return;
-      }
-      if (password) {
-        if (password === generatedCode.toString()) {
-          console.log("Code matches, creating account...");
-          navigate("/MainPage");
-        } else {
-          console.log("Code does not match.");
-          setFormState("sendCode");
+
+    try {
+      const response = await fetch(
+        "http://iam.localhost/api/v1/users/ResendOTP",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mobile_number: phoneNumber,
+          }),
         }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      localStorage.setItem("phoneNumber", phoneNumber);
+      localStorage.setItem("password", password);
+
+      navigate("./CreateAccount/Otp");
+    } catch (error) {
+      if (error.response) {
+        console.error('Response:', error.response.data);
+        console.error('Status:', error.response.status);
+        console.error('Headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
       } else {
-        console.log("Please enter the code.");
+        console.error('Request error', error.message);
       }
     }
   };
@@ -183,16 +159,11 @@ export default function CreateAccount() {
                 type="submit"
               >
                 <div className="font-inter text-[#ffffff] text-[24px] font-bold tracking-[0] leading-[normal] relative text-center whitespace-nowrap w-[fit-content]">
-                  {formState === "sendCode" ? "Send code" : "Create Account"}
+                  Send Code
                 </div>
               </button>
             </div>
           </form>
-          {formState === "createAccount" && (
-            <div className="text-[#6a6a6a] text-[16px] font-semibold h-[12px] 2xl:left-[133px] lg:left-[70px] absolute lg:top-[665px] tracking-[0] leading-[normal] absolute text-center lg:top-[660px] top-[495px] whitespace-nowrap">
-              <p>Time Remaining: {countdown} seconds</p>
-            </div>
-          )}
           <div className="font-inter text-[#4c4c4c] text-[40px] font-bold h-[29px] 2xl:left-[153px] xl:left-[80px] lg:left-[40px] tracking-[0] leading-[normal] absolute text-center top-[120px] whitespace-nowrap">
             Log In
           </div>
