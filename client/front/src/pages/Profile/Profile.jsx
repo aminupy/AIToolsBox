@@ -5,46 +5,58 @@ import "./style.css";
 import Edit from "./Edit";
 import moment from "moment";
 
+// Define fetchImageBlob and createDownloadLink here
+const fetchImageBlob = async (url) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return blob;
+};
+
+const createDownloadLink = (blob, filename) => {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  return link;
+};
+
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [userHistory, setUserHistory] = useState([]);
   const [images, setImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-  const fetchImageBlob = async (url) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return blob;
-  };
-
-  const createDownloadLink = (blob, filename) => {
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    return link;
-  };
-
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
     axios
-     .get("http://iam.localhost/api/v1/users/Me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-     .then((response) => {
-        setUser({
-          firstName: response.data.first_name,
-          lastName: response.data.last_name,
-          phoneNumber: response.data.mobile_number,
-
+    .get("http://iam.localhost/api/v1/users/Me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+    .then((response) => {
+          setUser({
+            firstName: response.data.first_name,
+            lastName: response.data.last_name,
+            phoneNumber: response.data.mobile_number,
+          });
+        })
+    .catch((error) => {
+          console.error(error);
         });
-      })
-     .catch((error) => {
-        console.error(error);
-      });
+
+    // Fetch OCR history
+    axios.get("http://ocr.localhost/api/v1/ocr/get_ocr_history", {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(response => {
+      setUserHistory(response.data);
+    }).catch(error => {
+      console.error(error);
+    });
   }, []);
 
   return (
@@ -74,13 +86,12 @@ export default function Profile() {
                   {user ? `${user.firstName} ${user.lastName}` : ""}
                 </div>
                 <div className="text-[#ffffff] font-inter text-[15px] font-light h-[53px] left-[189px] tracking-[0] leading-[normal] absolute text-center top-[64px] w-[265px]">
-                {user? user.phoneNumber : ""}
+                  {user ? user.phoneNumber : ""}
                 </div>
                 <img
                   className="h-[20px] left-[430px] object-cover absolute top-[37px] w-[20px]"
                   alt="Transparent"
                   src="/img/transparent-interface-icon-assets-icon-edit-icon-interface-ico-5.png"
-                  
                 />
                 <img
                   className="h-[180px] left-[0] absolute top-[0] w-[189px]"
@@ -178,49 +189,45 @@ export default function Profile() {
             <tbody>
               {userHistory.map((item, index) => (
                 <tr key={index}>
-                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[278px] tracking-[0] leading-[normal] relative text-center top-[90px] w-[93px]">
-                    OCR
-                  </td>
-                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[390px] tracking-[0] leading-[normal] relative text-center top-[90px] w-[150px]">
+                  <td>OCR</td>
+                  <td>
                     <a
                       href="#"
                       onClick={async (event) => {
                         event.preventDefault();
                         const blob = await fetchImageBlob(
-                          `http://localhost:80/api/ocr/${item.id}`
+                          `http://media.localhost/api/v1/media/GetMedia`,
+                          item.image_id
                         );
                         const link = createDownloadLink(
                           blob,
-                          `image-${item.id}.jpg`
+                          `image-${item.ocr_id}.jpg`
                         );
                         link.click();
                       }}
-                      className="bg-#82c0cc"
                     >
                       Download Image
                     </a>
                   </td>
-                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[550px] tracking-[0] leading-[normal] relative text-center top-[90px] w-[183px]">
+                  <td>
                     <a
                       href="#"
                       onClick={async (event) => {
                         event.preventDefault();
-                        const blob = new Blob([item.ocr_text], {
+                        const blob = new Blob([item.text], {
                           type: "text/plain",
                         });
                         const link = createDownloadLink(
                           blob,
-                          `text-${item.id}.txt`
+                          `text-${item.ocr_id}.txt`
                         );
                         link.click();
                       }}
-                      className="bg-#82c0cc"
                     >
                       Download Text
                     </a>
                   </td>
-
-                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[635px] tracking-[0] leading-[normal] relative text-center top-[80px] w-[104px]">
+                  <td>
                     {moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}
                   </td>
                 </tr>
@@ -234,7 +241,9 @@ export default function Profile() {
         <div className="text-[#489fb5] font-inter text-[16px] font-bold xl:left-[950px] lg:left-[455px] left-[435px] tracking-[0] leading-[normal] absolute text-center top-[372px] whitespace-nowrap">
           TEXT TO SPEECH
         </div>
-        <div className="text-[#489fb5] font-inter text-[16px] font-bold xl:left-[1350px] lg:left-[855px] left-[835px] tracking-[0] leading-[normal] absolute text-center top-[372px] whitespace-nowrap">IMAGE TO TEXT</div>
+        <div className="text-[#489fb5] font-inter text-[16px] font-bold xl:left-[1350px] lg:left-[855px] left-[835px] tracking-[0] leading-[normal] absolute text-center top-[372px] whitespace-nowrap">
+          IMAGE TO TEXT
+        </div>
         <img
           className="h-[2px] xl:left-[555px] lg:left-[55px] left-[30px] absolute top-[407px] w-[927px]"
           alt="Line"
