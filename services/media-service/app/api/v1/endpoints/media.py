@@ -1,5 +1,5 @@
 from typing import Annotated
-
+from loguru import logger
 from fastapi import APIRouter, Depends, UploadFile, status, Form
 from fastapi.responses import StreamingResponse
 
@@ -19,6 +19,7 @@ async def upload_media(
     file: UploadFile,
     current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
 ):
+    logger.info(f"Uploading media file {file.filename}")
     return await media_service.create_media(file, current_user.id)
 
 
@@ -33,6 +34,8 @@ async def get_media(
     media_schema, file_stream = await media_service.get_media(
         media_get.mongo_id, current_user.id
     )
+
+    logger.info(f"Retrieving media file {media_schema.filename}")
 
     return StreamingResponse(
         content=file_stream(),

@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
 
 from app.api.v1.endpoints.ocr import ocr_router
+from app.logging_service.logging_config import configure_logger
+
+
+configure_logger()
 
 app = FastAPI()
 
@@ -16,6 +21,8 @@ app.add_middleware(
 )
 
 app.include_router(ocr_router, prefix="/api/v1/ocr", tags=["ocr"])
+
+logger.info("OCR Service Started")
 
 
 @app.get("/")

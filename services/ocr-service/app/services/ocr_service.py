@@ -2,7 +2,7 @@ import pytesseract
 from PIL import Image
 from io import BytesIO
 from datetime import datetime
-
+from loguru import logger
 from bson import ObjectId
 from fastapi import Depends, HTTPException, status
 from typing import Annotated, Generator, Callable, Any
@@ -33,15 +33,19 @@ class OCRService:
             text=extracted_text
         )
         ocr_model = await self.ocr_repository.create_ocr(ocr_result)
+        logger.info(f'OCR result created for image {ocr_create.image_id} by user {user_id}')
         return OCRCreateResponse(**ocr_model.dict())
 
     async def get_ocr_result(self, ocr_request: OCRRequest, user_id: str) -> OCRResponse:
         ocr = await self.ocr_repository.get_ocr(ocr_request.ocr_id)
         if not ocr:
+            logger.error(f'OCR not found for id {ocr_request.ocr_id}')
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="OCR not found")
         if ocr.user_id != user_id:
+            logger.error(f'User {user_id} does not have permission to access OCR {ocr_request.ocr_id}')
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                                 detail="User does not have permission to access this OCR")
+        logger.info(f'OCR result retrieved for id {ocr_request.ocr_id}')
         return OCRResponse(**ocr.dict())
 
     async def get_ocr_history(self, user_id: str) -> list[OCRResponse]:
@@ -56,4 +60,5 @@ class OCRService:
                 created_at=ocr['created_at']
             )
 
+        logger.info(f'OCR history retrieved for user {user_id}')
         return [await map_ocr(ocr) async for ocr in ocrs]

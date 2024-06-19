@@ -19,3 +19,4 @@ httpx
 pillow
 tenacity
 aiobreaker
+loguru

@@ -1,5 +1,5 @@
 from typing import Annotated
-
+from loguru import logger
 from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.user_schema import (
@@ -36,6 +36,7 @@ class RegisterService(BaseService):
         )
 
         if existing_mobile_number:
+            logger.error(f"User with mobile number {user.mobile_number} already exists")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
             )
@@ -43,6 +44,7 @@ class RegisterService(BaseService):
         new_user = await self.user_service.create_user(user)
         otp = self.otp_service.send_otp(new_user.mobile_number)
 
+        logger.info(f"User with mobile number {user.mobile_number} created successfully")
         return UserCreateResponseSchema(
             user=UserSchema.from_orm(new_user),
             OTP=otp,
@@ -55,6 +57,7 @@ class RegisterService(BaseService):
         if not self.otp_service.verify_otp(
             verify_user_schema.mobile_number, verify_user_schema.OTP
         ):
+            logger.error(f"Invalid OTP for mobile number {verify_user_schema.mobile_number}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP"
             )
@@ -65,6 +68,7 @@ class RegisterService(BaseService):
 
         await self.user_service.update_user(user.id, {"is_verified": True})
 
+        logger.info(f"User with mobile number {verify_user_schema.mobile_number} verified")
         return VerifyOTPResponseSchema(
             verified=True, message="User verified successfully"
         )
@@ -76,21 +80,26 @@ class RegisterService(BaseService):
             resend_otp_schema.mobile_number
         )
         if not existing_user:
+            logger.error(f"User with mobile number {resend_otp_schema.mobile_number} does not exist")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
             )
 
         if existing_user.is_verified:
+            logger.error(f"User with mobile number {resend_otp_schema.mobile_number} already verified")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="User already verified"
             )
 
         if self.otp_service.check_exist(resend_otp_schema.mobile_number):
+            logger.error(f"OTP for mobile number {resend_otp_schema.mobile_number} already exists")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="OTP already exists"
             )
 
         otp = self.otp_service.send_otp(resend_otp_schema.mobile_number)
+
+        logger.info(f"OTP resent to mobile number {resend_otp_schema.mobile_number}")
         return ResendOTPResponseSchema(
             mobile_number=resend_otp_schema.mobile_number,
             OTP=otp,

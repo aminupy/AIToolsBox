@@ -2,7 +2,7 @@ from uuid import UUID
 
 from bson import ObjectId
 from fastapi import Depends, UploadFile, HTTPException, status
-
+from loguru import logger
 from typing import Annotated, Generator, Callable, Any, Tuple
 
 from fastapi import Depends, UploadFile, HTTPException, status
@@ -33,7 +33,7 @@ class MediaService:
             user_id=user_id,
         )
         await self.media_repository.create_media(media)
-
+        logger.info(f"Media {media.filename} created")
         return MediaSchema(
             mongo_id=str(media.mongo_id),
             filename=media.filename,
@@ -57,6 +57,8 @@ class MediaService:
             )
         file = await self.storage.get_file(media.storage_id)
 
+        logger.info(f"Media {media.filename} retrieved")
+
         return media, file
 
     async def get_media(
@@ -67,6 +69,7 @@ class MediaService:
         def file_stream():
             yield file
 
+        logger.info(f"Retrieving media file {media.filename}")
         return (
             MediaSchema(
                 mongo_id=media.mongo_id,
@@ -82,4 +85,5 @@ class MediaService:
 
     async def get_media_data(self, media_id: str, user_id: str) -> bytes:
         _, file = await self.__get_media_model(ObjectId(media_id), user_id)
+        logger.info(f"Retrieving media file {media_id}")
         return file

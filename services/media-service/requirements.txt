@@ -10,3 +10,4 @@ pydantic_core
 httpx
 tenacity
 aiobreaker
+loguru

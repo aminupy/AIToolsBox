@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status, Form
 from fastapi.responses import StreamingResponse
+from loguru import logger
 
 from app.domain.schemas.ocr_schema import OCRCreateRequest, OCRCreateResponse, OCRRequest, OCRResponse
 from app.domain.schemas.token_schema import TokenDataSchema
@@ -19,6 +20,7 @@ async def process_image(
     current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
     ocr_service: Annotated[OCRService, Depends()]
 ):
+    logger.info(f'Processing image {ocr_create.image_id} for user {current_user.id}')
     return await ocr_service.process_image(ocr_create, current_user.id)
 
 
