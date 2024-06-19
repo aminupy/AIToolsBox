@@ -85,7 +85,7 @@ export default function Profile() {
                 <div className="text-[#ffffff] font-inter text-[24px] font-semibold h-[53px] left-[164px] tracking-[0] leading-[normal] absolute text-center top-[37px] w-[265px]">
                   {user ? `${user.firstName} ${user.lastName}` : ""}
                 </div>
-                <div className="text-[#ffffff] font-inter text-[15px] font-light h-[53px] left-[189px] tracking-[0] leading-[normal] absolute text-center top-[64px] w-[265px]">
+                <div className="text-[#ffffff] font-inter text-[15px] font-light h-[53px] left-[149px] tracking-[0] leading-[normal] absolute text-center top-[74px] w-[265px]">
                   {user ? user.phoneNumber : ""}
                 </div>
                 <img
@@ -178,7 +178,7 @@ export default function Profile() {
                 <th className="text-[#82c0cc] font-inter text-[16px] font-bold left-[508px] tracking-[0] leading-[normal] absolute text-center top-[39px] w-[94px]">
                   Sent
                 </th>
-                <th className="text-[#82c0cc] font-inter text-[16px] font-bold left-[787px] tracking-[0] leading-[normal] absolute text-center top-[45px] w-[183px]">
+                <th className="text-[#82c0cc] font-inter text-[16px] font-bold left-[787px] tracking-[0] leading-[normal] absolute text-center top-[39px] w-[183px]">
                   Received
                 </th>
                 <th className="text-[#82c0cc] font-inter text-[16px] font-bold left-[1059px] tracking-[0] leading-[normal] absolute text-center top-[39px] w-[104px]">
@@ -189,8 +189,8 @@ export default function Profile() {
             <tbody>
               {userHistory.map((item, index) => (
                 <tr key={index}>
-                  <td>OCR</td>
-                  <td>
+                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[278px] tracking-[0] leading-[normal] absolute text-center top-[89px] w-[93px]">OCR</td>
+                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[508px] tracking-[0] leading-[normal] absolute text-center top-[89px] w-[94px]">
                     <a
                       href="#"
                       onClick={async (event) => {
@@ -209,7 +209,7 @@ export default function Profile() {
                       Download Image
                     </a>
                   </td>
-                  <td>
+                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[787px] tracking-[0] leading-[normal] absolute text-center top-[89px] w-[183px]">
                     <a
                       href="#"
                       onClick={async (event) => {
@@ -227,7 +227,7 @@ export default function Profile() {
                       Download Text
                     </a>
                   </td>
-                  <td>
+                  <td className="text-[#82c0cc] font-inter text-[16px] font-bold left-[1059px] tracking-[0] leading-[normal] absolute text-center top-[89px] w-[104px]">
                     {moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}
                   </td>
                 </tr>

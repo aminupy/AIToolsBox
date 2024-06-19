@@ -24,50 +24,49 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (!phoneNumber || !password) {
-      console.log("Please fill all required fields.");
+  
+    // Reset any existing errors
+    setPhoneError("");
+  
+    if (!phoneNumber ||!password) {
+      alert("Please fill all required fields."); // Use alert for simplicity; consider using a modal for better UX
       return;
     }
     if (!isValidPhoneNumber(phoneNumber)) {
-      console.log("Invalid phone number.");
+      setPhoneError("Invalid phone number."); // Set error state for display
       return;
     }
-
+  
     try {
-      const response = await fetch(
-        "http://iam.localhost/api/v1/users/ResendOTP",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            mobile_number: phoneNumber,
-          }),
-        }
-      );
-
+      const response = await fetch("http://iam.localhost/api/v1/users/Token", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `grant_type=&username=${encodeURIComponent(phoneNumber)}&password=${encodeURIComponent(password)}&scope=&client_id=&client_secret=`,
+      });
+  
       if (!response.ok) {
         throw new Error("Login failed");
       }
-
+  
       const data = await response.json();
-      console.log(data);
-
-      localStorage.setItem("phoneNumber", phoneNumber);
-      localStorage.setItem("password", password);
-
-      navigate("./CreateAccount/Otp");
+      console.log(data); // Keep this for debugging
+  
+      // Save the access token in local storage
+      localStorage.setItem("accessToken", data.access_token);
+  
+      // Redirect or perform other actions after successful login
+      navigate("/MainPage");
     } catch (error) {
       if (error.response) {
-        console.error('Response:', error.response.data);
-        console.error('Status:', error.response.status);
-        console.error('Headers:', error.response.headers);
+        // Display error message in a popup or modal
+        alert(`Error: ${error.response.data}`);
       } else if (error.request) {
-        console.error('No response received:', error.request);
+        alert('No response received');
       } else {
-        console.error('Request error', error.message);
+        alert(error.message);
       }
     }
   };
@@ -119,9 +118,9 @@ export default function Login() {
             <Link to="/" className="text-[#489fb5]">
               Create Account
             </Link>
-            <Link to="/AdminLogin" className="text-[#489fb5]">
+            {/* <Link to="/AdminLogin" className="text-[#489fb5]">
               / Admin Panel
-            </Link>
+            </Link> */}
           </p>
           <form
             className="h-[65px] 2xl:left-[133px] lg:left-[70px] absolute lg:top-[436px] top-[270px] w-[721px]"
@@ -159,7 +158,7 @@ export default function Login() {
                 type="submit"
               >
                 <div className="font-inter text-[#ffffff] text-[24px] font-bold tracking-[0] leading-[normal] relative text-center whitespace-nowrap w-[fit-content]">
-                  Send Code
+                  Log in
                 </div>
               </button>
             </div>
