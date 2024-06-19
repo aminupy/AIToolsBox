@@ -29,45 +29,20 @@ export default function Profile() {
     const token = localStorage.getItem("accessToken");
 
     axios
-      .get("http://localhost:80/api/users", {
+     .get("http://iam.localhost/api/v1/users/Me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) => {
-        setUser(response.data.User);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+     .then((response) => {
+        setUser({
+          firstName: response.data.first_name,
+          lastName: response.data.last_name,
+          phoneNumber: response.data.mobile_number,
 
-    axios
-      .get("http://localhost:80/api/ocr/?limit=10&page=1", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        });
       })
-      .then((response) => {
-        setUserHistory(response.data.OCR);
-
-        Promise.all(
-          response.data.OCR.map((item) =>
-            axios.get(`http://localhost:80/api/ocr/${item.id}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-          )
-        )
-          .then((responses) => {
-            const images = responses.map((response) => response.data);
-            setImages(images);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      })
-      .catch((error) => {
+     .catch((error) => {
         console.error(error);
       });
   }, []);
@@ -96,10 +71,10 @@ export default function Profile() {
             <div className="h-[180px] xl:left-[840px] lg:left-[400px] md:left-[360px] left-[350px] absolute top-[400px] w-[1036px]">
               <div className="h-[180px] left-[0] absolute top-[0] w-[454px]">
                 <div className="text-[#ffffff] font-inter text-[24px] font-semibold h-[53px] left-[164px] tracking-[0] leading-[normal] absolute text-center top-[37px] w-[265px]">
-                  {user ? `${user.first_name} ${user.last_name}` : ""}
+                  {user ? `${user.firstName} ${user.lastName}` : ""}
                 </div>
                 <div className="text-[#ffffff] font-inter text-[15px] font-light h-[53px] left-[189px] tracking-[0] leading-[normal] absolute text-center top-[64px] w-[265px]">
-                  {user ? user.email : ""}
+                {user? user.phoneNumber : ""}
                 </div>
                 <img
                   className="h-[20px] left-[430px] object-cover absolute top-[37px] w-[20px]"

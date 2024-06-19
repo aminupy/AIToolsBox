@@ -34,16 +34,16 @@ export default function CreateAccount() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (!firstName || !lastName || !phoneNumber || !password) {
-      console.log("Please fill all required fields.");
+  
+    if (!firstName ||!lastName ||!phoneNumber ||!password) {
+      alert("Please fill all required fields.");
       return;
     }
     if (!isValidPhoneNumber(phoneNumber)) {
-      console.log("Invalid phone number.");
+      alert("Invalid phone number.");
       return;
     }
-
+  
     try {
       const response = await fetch(
         "http://iam.localhost/api/v1/users/Register",
@@ -60,22 +60,23 @@ export default function CreateAccount() {
           }),
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Registration failed");
       }
-
+  
       const data = await response.json();
       console.log(data);
-
+  
       localStorage.setItem("phoneNumber", phoneNumber);
       localStorage.setItem("password", password);
-
+  
       navigate("./Otp");
     } catch (error) {
-      console.error(error.message);
+      alert(error.message); // Displaying error message using alert()
     }
   };
+  
 
   return (
     <div className="h-full">
