@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Dict, Any
 
 from bson import ObjectId
 from fastapi import Depends
@@ -17,7 +17,7 @@ class OCRRepository:
         ocr.ocr_id = result.inserted_id
         return ocr
 
-    async def get_media(self, ocr_id: ObjectId) -> OCRModel:
+    async def get_ocr(self, ocr_id: ObjectId) -> OCRModel:
         ocr = await self.collection.find_one({"_id": ocr_id})
         ocr['ocr_id'] = ocr['_id']
         return (
@@ -25,3 +25,6 @@ class OCRRepository:
             if ocr
             else None
         )
+
+    async def get_ocr_history(self, user_id: str) -> list[Dict[str, Any]]:
+        return self.collection.find({"user_id": user_id})
