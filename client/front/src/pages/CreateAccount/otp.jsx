@@ -43,8 +43,8 @@ const OtpInput = () => {
         throw new Error("Resend failed");
       }
 
-      const newOtp = await response.text(); // Assuming the API returns the new OTP as text
-      setOtp(newOtp); // Update the OTP state with the new OTP
+      const data = await response.json();
+      console.log(data);
       setCountdown(60); // Reset the countdown
     } catch (error) {
       console.error("Failed to resend OTP:", error.message);
@@ -126,7 +126,12 @@ const OtpInput = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div style={{
+      backgroundImage: `url('/img/Intro Desktop.png')`,
+      backgroundSize: 'cover',
+      height: '100vh'
+    }}>
+    <div className="flex justify-center items-center h-screen">
       <form className="space-y-4">
         <input
           type="text"
@@ -137,13 +142,13 @@ const OtpInput = () => {
           name="otp"
           className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
         />
-        <p>{countdown > 0 && `${countdown}s left`}</p> {/* Display countdown */}
+        <p className="text-white">{countdown > 0 && `${countdown}s left`}</p> {/* Display countdown */}
         <button
           onClick={resendOtp}
           disabled={loading || countdown > 0} // Disable button while loading or countdown active
           className={`w-full px-4 py-2 text-white ${
-            loading? "bg-gray-400" : "bg-blue-600"
-          } rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
+            loading? "bg-gray-400" : "bg-[#ffa62b]"
+          } rounded-md hover:bg-[#16697a] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
         >
           Resend OTP
         </button>
@@ -151,12 +156,13 @@ const OtpInput = () => {
           onClick={verifyOtp}
           disabled={loading} // Disable button while loading
           className={`w-full px-4 py-2 text-white ${
-            loading? "bg-gray-400" : "bg-blue-600"
-          } rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
+            loading? "bg-gray-400" : "bg-[#ffa62b]"
+          } rounded-md hover:bg-[#16697a] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
         >
           Verify OTP & Login
         </button>
       </form>
+    </div>
     </div>
   );
 };
