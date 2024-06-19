@@ -1,5 +1,5 @@
 from typing import Annotated
-
+from loguru import logger
 from bson import ObjectId
 from fastapi import Depends
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -15,6 +15,7 @@ class MediaRepository:
     async def create_media(self, media: MediaGridFSModel) -> MediaGridFSModel:
         result = await self.collection.insert_one(media.dict())
         media.mongo_id = result.inserted_id
+        logger.info(f"Media {media.filename} created")
         return media
 
     async def get_media(self, media_id: ObjectId) -> MediaGridFSModel:

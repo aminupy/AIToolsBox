@@ -1,5 +1,6 @@
 from typing import Annotated
-from fastapi import Depends
+from loguru import logger
+from fastapi import Depends, HTTPException, status, Request
 from app.core.config import get_settings, Settings
 from app.domain.schemas.token_schema import TokenDataSchema
 from app.infrastructure.clients.http_client import HTTPClient
@@ -21,4 +22,5 @@ class IAMClient:
                 f"{self.config.IAM_URL}/api/v1/users/Me", headers=headers
             )
             response.raise_for_status()
+            logger.info(f"Token {token} validated")
             return TokenDataSchema(**response.json())

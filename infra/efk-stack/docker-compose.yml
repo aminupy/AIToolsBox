@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
     container_name: elasticsearch_container
@@ -33,6 +32,7 @@ services:
     container_name: fluentbit
     volumes:
       - ../infra/efk-stack/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ../infra/efk-stack/parser_json.conf:/fluent-bit/etc/parser_json.conf
       - ../services/iam-service/logs:/fluent-bit/logs/iam
       - ../services/media-service/logs:/fluent-bit/logs/media
       - ../services/ocr-service/logs:/fluent-bit/logs/ocr
@@ -40,13 +40,11 @@ services:
       - efk-network
       - app-network
 
-
 networks:
   app-network:
     driver: bridge
   efk-network:
     driver: bridge
-
 
 volumes:
   esdata:

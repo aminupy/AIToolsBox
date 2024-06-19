@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-
+from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,5 +15,6 @@ class Settings(BaseSettings):
 
 
 @lru_cache
+@logger.catch
 def get_settings():
     return Settings()
