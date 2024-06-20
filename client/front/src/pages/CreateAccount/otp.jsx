@@ -5,7 +5,8 @@ const OtpInput = () => {
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [countdown, setCountdown] = useState(60); // Initialize countdown
+  const [countdown, setCountdown] = useState(60); 
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
 
   const phoneNumber = localStorage.getItem("phoneNumber");
   const password = localStorage.getItem("password");
@@ -15,6 +16,12 @@ const OtpInput = () => {
       setTimeout(() => setCountdown(countdown - 1), 1000);
     }
   }, [countdown]);
+
+  useEffect(() => {
+    if (isOtpVerified) {
+      navigate("/CreateAccount");
+    }
+  }, [isOtpVerified, navigate]);
 
   const handleInputChange = (e) => {
     const target = e.target;
@@ -45,7 +52,7 @@ const OtpInput = () => {
 
       const data = await response.json();
       console.log(data);
-      setCountdown(60); // Reset the countdown
+      setCountdown(60);
     } catch (error) {
       console.error("Failed to resend OTP:", error.message);
       alert("Failed to resend OTP. Please try again.");
@@ -81,6 +88,8 @@ const OtpInput = () => {
       }
 
       alert("OTP Verified Successfully!");
+
+      setIsOtpVerified(true);
 
       await loginWithCredentials();
 
@@ -142,10 +151,10 @@ const OtpInput = () => {
           name="otp"
           className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
         />
-        <p className="text-white">{countdown > 0 && `${countdown}s left`}</p> {/* Display countdown */}
+        <p className="text-white">{countdown > 0 && `${countdown}'s remaining`}</p> {/* Display countdown */}
         <button
           onClick={resendOtp}
-          disabled={loading || countdown > 0} // Disable button while loading or countdown active
+          disabled={loading || countdown > 0}
           className={`w-full px-4 py-2 text-white ${
             loading? "bg-gray-400" : "bg-[#ffa62b]"
           } rounded-md hover:bg-[#16697a] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
@@ -154,7 +163,7 @@ const OtpInput = () => {
         </button>
         <button
           onClick={verifyOtp}
-          disabled={loading} // Disable button while loading
+          disabled={loading}
           className={`w-full px-4 py-2 text-white ${
             loading? "bg-gray-400" : "bg-[#ffa62b]"
           } rounded-md hover:bg-[#16697a] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}

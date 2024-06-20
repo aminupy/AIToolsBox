@@ -25,15 +25,14 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
   
-    // Reset any existing errors
     setPhoneError("");
   
     if (!phoneNumber ||!password) {
-      alert("Please fill all required fields."); // Use alert for simplicity; consider using a modal for better UX
+      alert("Please fill all required fields.");
       return;
     }
     if (!isValidPhoneNumber(phoneNumber)) {
-      setPhoneError("Invalid phone number."); // Set error state for display
+      setPhoneError("Invalid phone number.");
       return;
     }
   
@@ -52,16 +51,13 @@ export default function Login() {
       }
   
       const data = await response.json();
-      console.log(data); // Keep this for debugging
+      console.log(data);
   
-      // Save the access token in local storage
       localStorage.setItem("accessToken", data.access_token);
   
-      // Redirect or perform other actions after successful login
       navigate("/MainPage");
     } catch (error) {
       if (error.response) {
-        // Display error message in a popup or modal
         alert(`Error: ${error.response.data}`);
       } else if (error.request) {
         alert('No response received');

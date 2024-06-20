@@ -5,7 +5,6 @@ import "./style.css";
 import Edit from "./Edit";
 import moment from "moment";
 
-// Define fetchImageBlob and createDownloadLink here
 const fetchImageBlob = async (url) => {
   const response = await fetch(url);
   const blob = await response.blob();
@@ -46,7 +45,6 @@ export default function Profile() {
           console.error(error);
         });
 
-    // Fetch OCR history
     axios.get("http://ocr.localhost/api/v1/ocr/get_ocr_history", {
       headers: {
         accept: "application/json",

@@ -73,7 +73,7 @@ export default function CreateAccount() {
   
       navigate("./Otp");
     } catch (error) {
-      alert(error.message); // Displaying error message using alert()
+      alert(error.message);
     }
   };
   
