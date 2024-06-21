@@ -189,7 +189,7 @@ export default function CreateAccount() {
                 onClick={handleSubmit}
               >
                 <div className="font-inter text-[#ffffff] text-[24px] font-bold tracking-[0] leading-[normal] relative text-center whitespace-nowrap w-[fit-content]">
-                  Send Code
+                  Register
                 </div>
               </button>
             </div>
