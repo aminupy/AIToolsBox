@@ -20,12 +20,9 @@ Welcome to **AIToolsBox**! This project is a comprehensive example of building a
 
 - A microservice architecture using FastAPI.
 - A Tesseract OCR service for extracting text from images.
-
-[//]: # (- A React web application for user interaction.)
-
-[//]: # (- A Flutter mobile app for accessing services on Android.)
 - Centralized logging and monitoring using the EFK stack (Elasticsearch, Fluent Bit, Kibana).
 - API management and routing through Traefik.
+- HTTP & gRPC communication between services.
 
 ## Features
 
@@ -33,6 +30,7 @@ Welcome to **AIToolsBox**! This project is a comprehensive example of building a
 - **Tesseract OCR Service**: Utilizes Tesseract OCR to extract text from images.
 - **Traefik API Gateway**: Manages routing and load balancing, accessible via `http://localhost:8080`.
 - **EFK Stack for Logging**: Centralized logging using Elasticsearch, Fluent Bit, and Kibana, accessible via `http://localhost:5601`.
+
 [//]: # (- **Web Application**: React-based web interface for user interaction.)
 [//]: # (- **Mobile Application**: Flutter-based Android client for accessing AI tools on the go.)
 - **Simplified Deployment**: Easy setup and deployment scripts for both Windows and Linux users.
@@ -53,10 +51,6 @@ To run this project, ensure you have the following installed:
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Python 3.10+](https://www.python.org/downloads/)
-
-[//]: # (- [Node.js and npm]&#40;https://nodejs.org/&#41; &#40;for the React web application&#41;)
-
-[//]: # (- [Flutter]&#40;https://flutter.dev/docs/get-started/install&#41; &#40;for the mobile application&#41;)
 
 ## Setup and Deployment
 
