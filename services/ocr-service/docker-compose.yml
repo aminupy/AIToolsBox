@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  ocr:
+    build:
+      context: ../services/ocr-service
+      dockerfile: Dockerfile
+    container_name: ocr_service
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017
+      - DATABASE_NAME=AIToolsBoxOCRDB
+      - TESSERACT_CMD=/usr/bin/tesseract
+      - MEDIA_SERVICE_GRPC=media_service:50051
+      - IAM_URL=http://iam
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ocr.rule=Host(`ocr.localhost`)"
+      - "traefik.http.services.ocr.loadbalancer.server.port=80"
+    restart: unless-stopped
+    depends_on:
+      - mongo
+
+
+networks:
+  app-network:
+    driver: bridge
+

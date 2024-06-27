@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  media:
+    build:
+      context: ../services/media-service
+      dockerfile: Dockerfile
+    container_name: media_service
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017
+      - DATABASE_NAME=AIToolsBoxMediaDB
+      - FILE_STORAGE_PATH=app/media
+      - IAM_URL=http://iam
+      - GRPC_PORT=50051
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.media.rule=Host(`media.localhost`)"
+      - "traefik.http.services.media.loadbalancer.server.port=80"
+    restart: unless-stopped
+    ports:
+      - "50051:50051" # grpc port
+    depends_on:
+      - mongo
+
+networks:
+  app-network:
+    driver: bridge
+
+
+
+volumes:
+  postgres:
+  pgadmin:
+  letsencrypt:
+  esdata:
