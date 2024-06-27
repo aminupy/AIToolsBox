@@ -30,9 +30,6 @@ Welcome to **AIToolsBox**! This project is a comprehensive example of building a
 - **Tesseract OCR Service**: Utilizes Tesseract OCR to extract text from images.
 - **Traefik API Gateway**: Manages routing and load balancing, accessible via `http://localhost:8080`.
 - **EFK Stack for Logging**: Centralized logging using Elasticsearch, Fluent Bit, and Kibana, accessible via `http://localhost:5601`.
-
-[//]: # (- **Web Application**: React-based web interface for user interaction.)
-[//]: # (- **Mobile Application**: Flutter-based Android client for accessing AI tools on the go.)
 - **Simplified Deployment**: Easy setup and deployment scripts for both Windows and Linux users.
 
 ## Clean Architecture
