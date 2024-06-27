@@ -56,7 +56,7 @@ To run this project, ensure you have the following installed:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/your-username/AIToolsBox.git
+git clone https://github.com/aminupy/AIToolsBox.git
 cd AIToolsBox
 ```
 
