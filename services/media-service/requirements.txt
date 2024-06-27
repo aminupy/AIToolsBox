@@ -1,0 +1,13 @@
+fastapi
+pymongo
+motor
+python-multipart
+grpcio>=1.64.1
+grpcio-tools
+pydantic
+pydantic-settings
+pydantic_core
+httpx
+tenacity
+aiobreaker
+loguru

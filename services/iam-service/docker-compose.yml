@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    restart: unless-stopped
+    expose:
+      - 5432
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  redis:
+    image: redis
+    container_name: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - app-network
+    restart: unless-stopped
+
+
+  iam:
+    build:
+      context: ../services/iam-service
+      dockerfile: Dockerfile
+    container_name: iam_service
+    environment:
+      - DATABASE_DIALECT=postgresql+psycopg2
+      - DATABASE_HOSTNAME=postgres_container
+      - DATABASE_NAME=IAM-DB
+      - DATABASE_PASSWORD=admin
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DEBUG_MODE=False
+      - REDIS_URL=redis
+      - JWT_SECRET_KEY=1807372bcbf0963ebe30a1df3669690b8f0e4f83a1b52e7579cfee9ff08db230
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - OTP_EXPIRE_TIME=60
+#    ports:
+#      - "80:80"
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.iam-service.rule=Host(`iam.localhost`)"
+      - "traefik.http.routers.iam-service.entrypoints=web"
+      - "traefik.http.services.iam-service.loadbalancer.server.port=80"
+
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - redis
+
+
+
+
+networks:
+  app-network:
+#    external: true
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+
