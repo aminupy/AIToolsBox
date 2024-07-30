@@ -17,6 +17,25 @@ const config = {
         "2xl": "1400px",
       },
     },
+    screens: {
+      sm: "640px",
+      // => @media (min-width: 640px) { ... }
+
+      md: "768px",
+      // => @media (min-width: 768px) { ... }
+
+      mg: "960px",
+      // => @media (min-width: 960px) { ... }
+
+      lg: "1024px",
+      // => @media (min-width: 1024px) { ... }
+
+      xl: "1280px",
+      // => @media (min-width: 1280px) { ... }
+
+      "2xl": "1536px",
+      // => @media (min-width: 1536px) { ... }
+    },
     extend: {
       colors: {
         blue: "#24ACD1",
@@ -62,6 +81,8 @@ const config = {
       backgroundImage: {
         "gradient-360": "linear-gradient(360deg, #4B5094 0%, #24ACD1 100%)",
         "gradient-90": "linear-gradient(90deg, #4B5094 0%, #24ACD1 100%)",
+        "gradient-180":
+          "linear-gradient(180deg, #FFFFFF 0%, #44A1FF 72.5%, #AA5AF0 100%)",
       },
       borderRadius: {
         "4xl": "2rem",
