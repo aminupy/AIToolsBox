@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function SignUpPage() {
   const [signUpState, setSignUpState] = useState("initial");
   return (
-    <main>
+    <main className="h-screen">
       {signUpState === "initial" && <SignUp setSignUpState={setSignUpState} />}
       {signUpState === "email-verification" && <EmailVerification />}
     </main>

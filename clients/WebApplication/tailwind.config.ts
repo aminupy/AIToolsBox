@@ -83,6 +83,8 @@ const config = {
         "gradient-90": "linear-gradient(90deg, #4B5094 0%, #24ACD1 100%)",
         "gradient-180":
           "linear-gradient(180deg, #FFFFFF 0%, #44A1FF 72.5%, #AA5AF0 100%)",
+        "custom-gradient":
+          "linear-gradient(180deg, #FFFFFF 7%, rgba(146, 214, 232, 0.8) 38.5%, rgba(91, 193, 221, 0.7) 47%, rgba(36, 172, 209, 0.6) 51.5%, rgba(46, 149, 194, 0.7) 60%, rgba(46, 148, 193, 0.705882) 60.5%, rgba(56, 126, 179, 0.8) 68.5%, rgba(60, 115, 171, 0.85) 76%, rgba(65, 103, 163, 0.9) 85%, #4B5094 100%)",
       },
       borderRadius: {
         "4xl": "2rem",
@@ -93,6 +95,10 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -103,6 +109,7 @@ const config = {
         },
       },
       animation: {
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
