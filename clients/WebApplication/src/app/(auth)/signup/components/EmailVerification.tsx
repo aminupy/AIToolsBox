@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import useUserStore from "@/lib/stores/userStore";
+import useUserStore from "@/lib/store/userStore";
 
 import {
   InputOTP,

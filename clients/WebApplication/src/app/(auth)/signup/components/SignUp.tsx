@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import useUserStore from "@/lib/stores/userStore";
+import useUserStore from "@/lib/store/userStore";
 
 type Inputs = {
   email: string;
