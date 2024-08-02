@@ -7,6 +7,7 @@ import { useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import useUserStore from "@/lib/store/userStore";
+import { Dispatch, SetStateAction } from "react";
 
 type Inputs = {
   email: string;
@@ -14,7 +15,7 @@ type Inputs = {
 };
 
 interface SignUpProps {
-  setSignUpState: React.Dispatch<React.SetStateAction<string>>;
+  setSignUpState: Dispatch<SetStateAction<"initial" | "email-verification">>;
 }
 
 export default function SignUp({ setSignUpState }: SignUpProps) {

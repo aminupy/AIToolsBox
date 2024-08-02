@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import useUserStore from "@/lib/store/userStore";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   InputOTP,
@@ -9,7 +10,13 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-export default function EmailVerification() {
+interface EmailVerificationProps {
+  setSignUpState: Dispatch<SetStateAction<"initial" | "email-verification">>;
+}
+
+export default function EmailVerification({
+  setSignUpState,
+}: EmailVerificationProps) {
   const { email } = useUserStore();
   return (
     <div className="h-full w-full flex justify-center items-center">
