@@ -3,57 +3,36 @@ import time
 import os
 
 
+base_dir = os.getcwd()
 
 
 
+models_path = os.path.join(base_dir, "models/")
 
-models_path = "models/"
 
-def upscale_2x(image_path):
+def upscale(image_path, ratio):
     img = cv2.imread(image_path)
+    search_string = r"\www"
+    img_name = image_path[image_path.rfind(search_string[0]) + 1:]
+    print(img_name)
+    if ratio not in [2, 3, 4] :
+        raise ValueError
     sr = cv2.dnn_superres.DnnSuperResImpl_create()
-    model = os.path.join(models_path, "ESPCN_x2.pb")
+    model = os.path.join(models_path, f"ESPCN_x{ratio}.pb")
     sr.readModel(model)
-    sr.setModel('espcn', 2)
+    sr.setModel('espcn', ratio)
     timer = time.time()
-    print("2x upscaling image...")
+    print(f"{ratio}x upscaling image...")
     upscaled = sr.upsample(img)
-    cv2.imwrite("result.jpg",upscaled)
+    cv2.imwrite(f"{ratio}x_{img_name}",upscaled)
     print("done")
     now_time = time.time()
     timer = now_time - timer
-    print(f"time spent {int(timer)} seconds")
+    print(f"time spent : {int(timer)} seconds")
+    return os.path.join(base_dir, image_path)
 
 
-def upscale_3x(image_path):
-    img = cv2.imread(image_path)
-    sr = cv2.dnn_superres.DnnSuperResImpl_create()
-    model = os.path.join(models_path, "ESPCN_x3.pb")
-    sr.readModel(model)
-    sr.setModel('espcn', 3)
-    timer = time.time()
-    print("3x upscaling image...")
-    upscaled = sr.upsample(img)
-    cv2.imwrite("result.jpg",upscaled)
-    print("done")
-    now_time = time.time()
-    timer = now_time - timer
-    print(f"time spent {int(timer)} seconds")
-
-def upscale_4x(image_path):
-    img = cv2.imread(image_path)
-    sr = cv2.dnn_superres.DnnSuperResImpl_create()
-    model = os.path.join(models_path, "ESPCN_x4.pb")
-    sr.readModel(model)
-    sr.setModel('espcn', 4)
-    timer = time.time()
-    print("4x upscaling image...")
-    upscaled = sr.upsample(img)
-    cv2.imwrite("result.jpg",upscaled)
-    print("done")
-    now_time = time.time()
-    timer = now_time - timer
-    print(f"time spent {int(timer)} seconds")
 
 
-upscale_4x("images/logo.jpg")
+
+print(upscale("images\sample.jpg",2))
