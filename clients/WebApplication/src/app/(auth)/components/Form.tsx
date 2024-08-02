@@ -8,6 +8,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import useUserStore from "@/lib/store/userStore";
 import { Dispatch, SetStateAction } from "react";
+import Link from "next/link";
 
 type Inputs = {
   email: string;
@@ -108,7 +109,7 @@ export default function Form({ setSignUpState, formName }: FormProps) {
             {isEmailValid && (
               <div
                 onClick={handleEmailChange}
-                className="absolute top-0 right-0 text-blue mt-4 mr-5 cursor-pointer"
+                className="absolute top-0 right-0 text-purple mt-4 mr-5 cursor-pointer"
               >
                 Edit
               </div>
@@ -141,6 +142,13 @@ export default function Form({ setSignUpState, formName }: FormProps) {
                 )}
               </div>
             </div>
+            {formName === "login" && (
+              <div className="mt-3 ml-1 mb-1">
+                <Link href="/" className="text-sm text-purple font-semibold">
+                  Forget Password?
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -149,14 +157,12 @@ export default function Form({ setSignUpState, formName }: FormProps) {
         {formName === "signup"
           ? "Already have an account?"
           : "Don't have an account?"}
-        <span
-          onClick={() =>
-            router.push(formName === "signup" ? "/login" : "/signup")
-          }
+        <Link
+          href={formName === "signup" ? "/login" : "/signup"}
           className="text-blue cursor-pointer ml-1"
         >
           {formName === "signup" ? "Login" : "Sign Up"}
-        </span>
+        </Link>
       </p>
       <div className="relative flex items-center w-full my-4">
         <div className="flex-grow border-t border-gray-400"></div>

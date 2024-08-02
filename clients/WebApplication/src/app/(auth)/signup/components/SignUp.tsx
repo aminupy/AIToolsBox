@@ -9,7 +9,7 @@ interface SignUpProps {
 export default function SignUp({ setSignUpState }: SignUpProps) {
   return (
     <main className="flex mg:flex-row h-screen justify-center items-center">
-      <div className="h-full mg:h-[90%] w-full mg:w-9/12 mg:bg-gradient-360 shadow-md mg:rounded-5xl mg:rounded-r-6xl">
+      <div className="h-full mg:h-[90%] w-full mg:w-9/12 mg:bg-gradient-360 shadow-xl mg:rounded-5xl mg:rounded-r-6xl">
         <div className="h-full flex flex-col mg:flex-row justify-between">
           <div className="text-white bg-custom-gradient mg:bg-none flex flex-col items-center h-[60%] mg:w-[45%] pt-10 mg:pt-28">
             <div className="flex flex-col items-center gap-5 mg:gap-14">
@@ -28,7 +28,7 @@ export default function SignUp({ setSignUpState }: SignUpProps) {
               <p>All You Need In a Box!</p>
             </div>
           </div>
-          <div className="bg-[#4B5094] mg:bg-white overflow-y-hidden  mg:rounded-5xl w-full mg:w-[55%]">
+          <div className="bg-[#4B5094] mg:bg-white overflow-y-hidden mg:rounded-5xl w-full mg:w-[55%]">
             <div className="h-screen mg:h-full w-full bg-white rounded-t-5xl mg:rounded-5xl flex flex-col items-center">
               <div className="pt-7 hidden mg:block">
                 <Image src="/Logo.png" width={70} height={70} alt="Logo" />
