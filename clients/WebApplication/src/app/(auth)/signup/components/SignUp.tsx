@@ -83,15 +83,21 @@ export default function SignUp({ setSignUpState }: SignUpProps) {
   };
 
   return (
-    <main className="flex mg:flex-row h-screen justify-center items-center mg:pb-16">
+    <main className="flex mg:flex-row h-screen justify-center items-center">
       <div className="h-full mg:h-[80%] w-full mg:w-9/12 mg:bg-gradient-360 shadow-md mg:rounded-5xl mg:rounded-r-6xl">
         <div className="h-full flex flex-col mg:flex-row justify-between">
           <div className="text-white bg-custom-gradient mg:bg-none flex flex-col items-center h-[60%] mg:w-[45%] pt-10 mg:pt-28">
             <div className="flex flex-col items-center gap-5 mg:gap-14">
               <div className="mg:hidden">
-                <Image src="/Logo.png" width={150} height={150} alt="Logo" />
+                <Image
+                  src="/Logo.png"
+                  width={150}
+                  height={150}
+                  alt="Logo"
+                  className="w-24 h-24 mg:w-36 mg:h-36"
+                />
               </div>
-              <h2 className="text-4xl mg:text-3xl xl:text-4xl 2xl:text-5xl font-bold">
+              <h2 className="text-5xl mg:text-3xl xl:text-4xl 2xl:text-5xl font-bold mt-5">
                 AI Tools Box
               </h2>
               <p>All You Need In a Box!</p>
