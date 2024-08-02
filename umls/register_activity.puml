@@ -1,0 +1,89 @@
+@startuml
+|User|
+start
+:Enter email;
+
+|Frontend|
+:Send email to IAM Service;
+
+|IAM Service|
+:Generate OTP;
+:Send email with OTP;
+:Store OTP in Redis;
+
+|User|
+:Enter OTP;
+
+|Frontend|
+:Send OTP to IAM Service;
+
+|IAM Service|
+    while (Is OTP valid?) is (no)
+        :Notify frontend to retry or resend OTP;
+        |Frontend|
+            :Notify user to retry or resend OTP;
+        |User|
+            while (User request for new OTP ?) is (yes)
+                |Frontend|
+                    :Request new OTP for user;
+                |IAM Service|
+                    if (User OTP Expired?) then (yes)
+                        :Generate new OTP;
+                        :Send email with new OTP;
+                        :Store new OTP in Redis;
+                    else (no)
+                        :Notify frontend user already has a OTP (ERROR);
+
+                    endif
+                |User|
+                    :Enter OTP again;
+            endwhile (no)
+                |User|
+                    :Retry entering OTP;
+        |Frontend|
+            :Resend OTP to IAM Service;
+    endwhile (yes)
+        |IAM Service|
+            :Mark email as verified;
+            :Move email to database with "pending" status;
+            :Notify frontend to prompt for additional information;
+
+|Frontend|
+:Prompt for additional information (first name, last name, password);
+
+|User|
+:Enter first name, last name, password, and confirm password;
+
+|Frontend|
+:Send data to IAM Service;
+
+|IAM Service|
+if (Is password valid?) then (yes)
+  :Hash password;
+  :Complete user record in database (update status to "active");
+  :Notify frontend of success;
+else (no)
+  :Notify frontend to correct input;
+  |Frontend|
+  :Notify user to correct input;
+  |User|
+  :Enter first name, last name, password, and confirm password;
+  |Frontend|
+  :Send data to IAM Service;
+endif
+
+if (User disconnects or closes tab) then (yes)
+  :Save partial data in local/session storage;
+  :Pre-fill form fields on return;
+endif
+
+|IAM Service|
+: generates JWT tokens;
+: sends welcome email;
+
+|Frontend|
+:clears saved data (local/session storage);
+:Redirect to login page or log in automatically;
+
+stop
+@enduml
