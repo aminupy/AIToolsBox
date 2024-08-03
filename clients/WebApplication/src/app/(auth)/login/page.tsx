@@ -4,7 +4,7 @@ import Form from "../components/Form";
 export default function Login() {
   return (
     <main className="h-screen flex justify-center items-center">
-      <div className="h-full sm:h-[93%] w-full sm:w-[40rem] bg-white sm:rounded-5xl shadow-md">
+      <div className="h-full mg:h-[93%] w-full mg:w-[40rem] bg-white mg:rounded-5xl shadow-md">
         <div className="flex flex-col items-center">
           <div className="pt-10">
             <Image src="/Logo.png" width={70} height={70} alt="Logo" />

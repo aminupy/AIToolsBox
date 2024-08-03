@@ -12,7 +12,7 @@ import Link from "next/link";
 
 type Inputs = {
   email: string;
-  password: string;
+  password?: string;
 };
 
 interface FormProps {
@@ -56,7 +56,6 @@ export default function Form({ setSignUpState, formName }: FormProps) {
 
   const checkPassword = (password: string) => {
     const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
-    console.log(passwordPattern.test(password));
     if (!passwordPattern.test(password)) {
       setError("password", {
         type: "manual",
@@ -78,12 +77,14 @@ export default function Form({ setSignUpState, formName }: FormProps) {
       return;
     }
 
-    if (!isPasswordValid) {
-      if (!checkPassword(password)) return;
+    if (formName === "login") {
+      if (!isPasswordValid) {
+        if (!checkPassword(password)) return;
+      }
+      router.push("/");
+    } else if (formName === "signup") {
+      setSignUpState!("email-verification");
     }
-
-    if (formName === "signup") return setSignUpState!("email-verification");
-    else router.push("/");
   };
 
   return (
@@ -117,7 +118,7 @@ export default function Form({ setSignUpState, formName }: FormProps) {
           </div>
         </div>
 
-        {isEmailValid && (
+        {formName === "login" && isEmailValid && (
           <div>
             <div className="relative">
               <Input
@@ -142,13 +143,11 @@ export default function Form({ setSignUpState, formName }: FormProps) {
                 )}
               </div>
             </div>
-            {formName === "login" && (
-              <div className="mt-3 ml-1 mb-1">
-                <Link href="/" className="text-sm text-purple font-semibold">
-                  Forget Password?
-                </Link>
-              </div>
-            )}
+            <div className="mt-3 ml-1 mb-1">
+              <Link href="/" className="text-sm text-purple font-semibold">
+                Forget Password?
+              </Link>
+            </div>
           </div>
         )}
       </div>
