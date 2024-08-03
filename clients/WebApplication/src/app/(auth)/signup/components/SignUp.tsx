@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
-import Form from "../../components/Form";
+import InitalForm from "../../components/InitialForm";
+import { SignUpState } from "@/types";
 
 interface SignUpProps {
-  setSignUpState: Dispatch<SetStateAction<"initial" | "email-verification">>;
+  setSignUpState: Dispatch<SetStateAction<SignUpState>>;
 }
 
 export default function SignUp({ setSignUpState }: SignUpProps) {
@@ -37,7 +38,7 @@ export default function SignUp({ setSignUpState }: SignUpProps) {
                 <h2 className="text-3xl sm:text-4xl mg:text-3xl 2xl:text-4xl font-bold">
                   Create an account
                 </h2>
-                <Form setSignUpState={setSignUpState} formName="signup" />
+                <InitalForm setSignUpState={setSignUpState} formName="signup" />
               </div>
             </div>
           </div>

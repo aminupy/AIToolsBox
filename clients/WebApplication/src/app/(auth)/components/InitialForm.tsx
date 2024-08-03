@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import useUserStore from "@/lib/store/userStore";
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
+import { SignUpState } from "@/types";
 
 type Inputs = {
   email: string;
@@ -17,10 +18,10 @@ type Inputs = {
 
 interface FormProps {
   formName: string;
-  setSignUpState?: Dispatch<SetStateAction<"initial" | "email-verification">>;
+  setSignUpState?: Dispatch<SetStateAction<SignUpState>>;
 }
 
-export default function Form({ setSignUpState, formName }: FormProps) {
+export default function InitalForm({ setSignUpState, formName }: FormProps) {
   const { setEmail } = useUserStore();
   const router = useRouter();
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -45,13 +46,16 @@ export default function Form({ setSignUpState, formName }: FormProps) {
     if (!emailPattern.test(email)) {
       setError("email", {
         type: "manual",
-        message: "Invalid email format",
+        message: "Please enter a valid email address.",
       });
       setIsEmailValid(false);
       return;
     }
     setEmail(email);
     setIsEmailValid(true);
+    if (formName == "signup") {
+      setSignUpState!("email-verification");
+    }
   };
 
   const checkPassword = (password: string) => {
@@ -99,7 +103,7 @@ export default function Form({ setSignUpState, formName }: FormProps) {
               type="email"
               placeholder="Email Address"
               className={`h-14 ${errors.email ? "border-red-600" : ""}`}
-              readOnly={isEmailValid}
+              readOnly={isEmailValid && formName === "login"}
               {...register("email")}
             />
             {errors.email && (
@@ -107,13 +111,15 @@ export default function Form({ setSignUpState, formName }: FormProps) {
                 {errors.email.message}
               </p>
             )}
-            {isEmailValid && (
+            {isEmailValid && formName === "login" ? (
               <div
                 onClick={handleEmailChange}
                 className="absolute top-0 right-0 text-purple mt-4 mr-5 cursor-pointer"
               >
                 Edit
               </div>
+            ) : (
+              ""
             )}
           </div>
         </div>

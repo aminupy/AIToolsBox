@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Form from "../components/Form";
+import InitalForm from "../components/InitialForm";
 
 export default function Login() {
   return (
@@ -11,7 +11,7 @@ export default function Login() {
           </div>
           <h2 className="text-4xl font-bold mt-7">Welcome back</h2>
           <div className="w-80 sm:w-[30rem] mg:w-80 lg:w-[23rem] 2xl:w-[28rem]">
-            <Form formName="login" />
+            <InitalForm formName="login" />
           </div>
         </div>
       </div>

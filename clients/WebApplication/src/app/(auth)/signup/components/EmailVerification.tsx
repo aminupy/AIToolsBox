@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
+import { useState } from "react";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import useUserStore from "@/lib/store/userStore";
 import { Dispatch, SetStateAction } from "react";
+import { SignUpState } from "@/types";
 
 import {
   InputOTP,
@@ -11,15 +13,31 @@ import {
 } from "@/components/ui/input-otp";
 
 interface EmailVerificationProps {
-  setSignUpState: Dispatch<SetStateAction<"initial" | "email-verification">>;
+  setSignUpState: Dispatch<SetStateAction<SignUpState>>;
 }
 
 export default function EmailVerification({
   setSignUpState,
 }: EmailVerificationProps) {
   const { email } = useUserStore();
+  const [otp, setOtp] = useState("");
+
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
+    if (value.length === 6) {
+      verifyOtp(value);
+    }
+  };
+
+  const verifyOtp = (otp: string) => {
+    console.log("Verifying OTP:", otp);
+    if (otp === "123456") {
+      setSignUpState("additional-info");
+    }
+  };
+
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <main className="h-full w-full flex justify-center items-center">
       <div className="h-full w-[40rem] sm:h-[40rem] bg-white sm:rounded-3xl flex justify-center pt-16">
         <div className="flex flex-col gap-12 items-center">
           <Image src="/Logo.png" height={75} width={75} alt="Logo" />
@@ -31,7 +49,11 @@ export default function EmailVerification({
             </p>
             <div className="flex flex-col items-center gap-6 mt-3">
               <p>Please enter the code</p>
-              <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+              <InputOTP
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                onChange={handleOtpChange}
+              >
                 <InputOTPGroup>
                   <InputOTPSlot index={0} />
                 </InputOTPGroup>
@@ -56,6 +78,6 @@ export default function EmailVerification({
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
