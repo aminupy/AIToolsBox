@@ -1,0 +1,34 @@
+@startuml
+|User|
+start
+repeat
+:Enter email and password;
+
+while (email or password is null or email format is incorrect ?) is (yes)
+|Frontend|
+:notify user to correct input;
+
+endwhile (no)
+:Send email and password to IAM Service;
+
+|IAM Service|
+if (Does user exist?) then (No)
+    |IAM Service|
+    :Notify frontend that user does not exist;
+    |Frontend|
+    :Notify user to register;
+    stop
+    end if;
+    -> Yes;
+    |IAM Service|
+    :Validate email and password;
+    backward: Notify Frontend user is not authorized;
+    repeat while (credentials is valid ?) is (no) not (yes)
+        ->
+        :Generate JWT tokens;
+        :Send tokens to frontend;
+        |Frontend|
+        :store access & refresh tokens;
+        :Redirect user to dashboard/home page;
+end
+@enduml

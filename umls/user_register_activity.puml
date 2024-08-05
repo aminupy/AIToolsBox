@@ -49,20 +49,22 @@ start
             :Notify frontend to prompt for additional information;
 
 |Frontend|
-:Prompt for additional information (first name, last name, password);
+:Prompt for personal information (first name, last name (optional));
+:check for not null first name;
 
 |User|
-:Enter first name, last name, password, and confirm password;
+:Enter first name, last name;
 
 |Frontend|
-:Send data to IAM Service;
+:Save first & last name to (local/session storage);
+:Prompt for creating a password (password, confirm password);
+:check password (at least 8 characters, ...);
+:check password & confirm password are the same;
+:send user information & password to IAM service;
+
 
 |IAM Service|
-if (Is password valid?) then (yes)
-  :Hash password;
-  :Complete user record in database (update status to "active");
-  :Notify frontend of success;
-else (no)
+while (Is password valid?) is (no)
   :Notify frontend to correct input;
   |Frontend|
   :Notify user to correct input;
@@ -70,7 +72,11 @@ else (no)
   :Enter first name, last name, password, and confirm password;
   |Frontend|
   :Send data to IAM Service;
-endif
+endwhile (yes)
+  :Hash password;
+  :Complete user record in database (update status to "active");
+  :Notify frontend of success;
+
 
 if (User disconnects or closes tab) then (yes)
   :Save partial data in local/session storage;
