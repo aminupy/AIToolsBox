@@ -1,34 +1,26 @@
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from loguru import logger
 
 from app.domain.models.user import User
-from app.domain.schemas.token_schema import TokenSchema, TokenDataSchema
-from app.domain.schemas.user_schema import (
-    UserCreateSchema,
-    UserCreateResponseSchema,
-    UserSchema,
-    UserLoginSchema,
-    VerifyOTPSchema,
-    VerifyOTPResponseSchema,
-    ResendOTPSchema,
-    ResendOTPResponseSchema,
+from app.domain.schemas.user import (
+    UserInitialSignUp,
+    UserResponse
 )
-from app.services.auth_services.auth_service import AuthService, get_current_user
-from app.services.register_service import RegisterService
-from app.services.user_service import UserService
+from app.services.auth_service import AuthService, get_current_user
+from app.services.signup_service import RegisterService
 
 user_router = APIRouter()
 
 
 @user_router.post(
-    "/Register",
-    response_model=UserCreateResponseSchema,
+    "/signup",
+    response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def register(
-    user: UserCreateSchema, register_service: Annotated[RegisterService, Depends()]
+async def signup(
+    user: UserInitialSignUp, signup_service: Annotated[RegisterService, Depends()]
 ) -> UserCreateResponseSchema:
     logger.info(f"Registering user with mobile number {user.mobile_number}")
     return await register_service.register_user(user)
@@ -72,5 +64,5 @@ async def resend_otp(
 
 @user_router.get("/Me", response_model=UserSchema, status_code=status.HTTP_200_OK)
 async def read_users_me(current_user: User = Depends(get_current_user)) -> UserSchema:
-    logger.info(f"Getting user with mobile number {current_user.mobile_number}")
+    logger.info(f"Getting user with mobile number {current_user.email}")
     return current_user

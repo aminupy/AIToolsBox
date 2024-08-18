@@ -18,9 +18,12 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
-    OTP_EXPIRE_TIME: int
+    REFRESH_TOKEN_EXPIRE_DAYS: int
+    OTP_SECRET_KEY: str
+    OTP_DIGITS: int
+    OTP_EXPIRE_SECONDS: int
 
-    # model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
+    model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
 
 
 @lru_cache

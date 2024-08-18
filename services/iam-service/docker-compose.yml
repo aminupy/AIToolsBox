@@ -65,7 +65,7 @@ services:
       - JWT_SECRET_KEY=1807372bcbf0963ebe30a1df3669690b8f0e4f83a1b52e7579cfee9ff08db230
       - JWT_ALGORITHM=HS256
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - OTP_EXPIRE_TIME=60
+      - OTP_EXPIRE_SECONDS=60
 #    ports:
 #      - "80:80"
     networks:

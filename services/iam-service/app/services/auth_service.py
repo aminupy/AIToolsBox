@@ -6,8 +6,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from app.domain.models.user import User
-from app.domain.schemas.token_schema import TokenSchema
-from app.domain.schemas.user_schema import UserLoginSchema
+from app.domain.schemas.token import Token
+from app.domain.schemas.user import UserLoginSchema
 from app.services.auth_services.hash_sevice import HashService
 from app.services.base_service import BaseService
 from app.services.user_service import UserService
@@ -68,6 +68,9 @@ class AuthService(BaseService):
             to_encode, self.config.JWT_SECRET_KEY, algorithm=self.config.JWT_ALGORITHM
         )
         return encoded_jwt
+
+    def forgot_password(self):
+        pass
 
 
 async def get_current_user(

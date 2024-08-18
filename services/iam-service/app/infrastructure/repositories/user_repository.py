@@ -4,7 +4,7 @@ from loguru import logger
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.core.db.database import get_db
+from app.db.database import get_db
 from app.domain.models.user import User
 
 
@@ -41,6 +41,6 @@ class UserRepository:
         logger.info(f"Fetching user {user_id}")
         return self.db.get(User, user_id)
 
-    def get_user_by_mobile_number(self, mobile_number: str) -> User:
-        logger.info(f"Fetching user with mobile number {mobile_number}")
-        return self.db.query(User).filter(User.mobile_number == mobile_number).first()
+    def get_user_by_email(self, email: str) -> User:
+        logger.info(f"Fetching user with mobile number {email}")
+        return self.db.query(User).filter(User.email == email).first()

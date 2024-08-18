@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from app.api.v1.endpoints.users import user_router
-from app.core.db.database import init_db
-from app.logging_service.logging_config import configure_logger
+from app.api.v1.routes.users import user_router
+from app.db.database import init_db
+from app.core.logging.logger import configure_logger
 
 
 configure_logger()
