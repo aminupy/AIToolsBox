@@ -42,5 +42,5 @@ class UserRepository:
         return self.db.get(User, user_id)
 
     def get_user_by_email(self, email: str) -> User:
-        logger.info(f"Fetching user with mobile number {email}")
+        logger.info(f"Fetching user with email {email}")
         return self.db.query(User).filter(User.email == email).first()

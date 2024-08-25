@@ -10,10 +10,6 @@ class OTPVerify(BaseModel):
     otp: constr(min_length=6, max_length=6)
 
 
-class OTPResend(OTPRequest):
-    pass
-
-
 class OTPResponse(BaseModel):
     message: str
     email: str

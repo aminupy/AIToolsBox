@@ -1,12 +1,16 @@
 import hmac
 import time
+from typing import Annotated
+
+from fastapi import Depends
+
 from app.core.otp.generator import TOTPGenerator
 
 
 class TOTPVerifier:
-    def __init__(self, window: int = 1):
-        self.generator = TOTPGenerator()
-        self.window = window
+    def __init__(self, generator: Annotated[TOTPGenerator, Depends()]):
+        self.generator = generator
+        self.window = 1
 
     async def verify(self, otp: str, user_identifier: str, timestamp: int = None) -> bool:
         if timestamp is None:

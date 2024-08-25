@@ -4,7 +4,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, EmailStr, constr
 
-from app.domain.schemas.token import TokenSchema
 from app.domain.models.user_status import UserStatus
 
 

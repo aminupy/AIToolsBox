@@ -1,3 +1,5 @@
+from typing import Annotated
+from fastapi import Depends
 import hmac
 import hashlib
 import base64
@@ -8,7 +10,7 @@ from app.core.config import get_settings, Settings
 
 
 class TOTPGenerator:
-    def __init__(self, config: Settings = get_settings()):
+    def __init__(self, config: Annotated[Settings, Depends(get_settings)]):
         self.base_secret = config.OTP_SECRET_KEY
         self.interval = config.OTP_EXPIRE_SECONDS  # Validity period in seconds
         self.digits = config.OTP_DIGITS
@@ -35,7 +37,3 @@ class TOTPGenerator:
         otp = await self._truncate(hmac_hash)
         return str(otp).zfill(self.digits)
 
-if __name__ == '__main__':
-    generator = TOTPGenerator()
-    otp = generator.generate(user_identifier="amin")
-    print(otp)

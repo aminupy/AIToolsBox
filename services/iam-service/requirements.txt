@@ -4,6 +4,7 @@ uvicorn
 sqlalchemy
 databases
 pydantic
+pydantic[email]
 pydantic-settings
 typing-inspect
 psycopg2-binary

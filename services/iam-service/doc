@@ -1,0 +1,271 @@
+Testing a FastAPI application is crucial for ensuring that your code behaves as expected and is free of bugs. This guide will walk you through setting up your testing environment, writing tests for different components of your FastAPI application, and following best practices to create a robust and maintainable test suite.
+
+1. Setting Up the Testing Environment
+Before you start writing tests, you need to set up your testing environment.
+
+1.1. Install Required Packages
+FastAPI is designed to work well with pytest, a powerful testing framework for Python. You’ll also need httpx for making asynchronous HTTP requests during testing, and pytest-asyncio for testing asynchronous functions.
+
+bash
+Copy code
+pip install pytest pytest-asyncio httpx pytest-mock
+pytest: The main testing framework.
+pytest-asyncio: Enables testing of asynchronous FastAPI routes and services.
+httpx: A requests-like library for making HTTP requests in tests.
+pytest-mock: Provides support for mocking in pytest.
+1.2. Directory Structure
+Your tests should be organized in a way that mirrors your project’s structure. Here’s an example:
+
+Copy code
+app/
+├── core/
+├── domain/
+├── services/
+├── api/
+│   ├── routes/
+├── tests/
+│   ├── test_auth.py
+│   ├── test_users.py
+│   ├── test_otp.py
+│   ├── conftest.py
+2. Writing Tests
+2.1. Writing Unit Tests
+Unit tests focus on testing individual components (e.g., functions, classes) in isolation. You should mock any dependencies and ensure that each test case is independent of the others.
+
+Example: Testing SignInService
+python
+Copy code
+import pytest
+from app.services.signin_service import SignInService
+from app.domain.schemas.user import UserSignIn
+from app.domain.models.user import User
+from app.domain.models.user_status import UserStatus
+from app.core.exceptions import UserNotFoundException, InvalidPasswordException, UserStatusException
+from unittest.mock import AsyncMock
+
+@pytest.fixture
+def mock_user_service():
+    return AsyncMock()
+
+@pytest.fixture
+def mock_hash_service():
+    return AsyncMock()
+
+@pytest.fixture
+def sign_in_service(mock_user_service, mock_hash_service):
+    return SignInService(
+        user_service=mock_user_service,
+        hash_service=mock_hash_service,
+    )
+
+@pytest.mark.asyncio
+async def test_sign_in_success(sign_in_service, mock_user_service, mock_hash_service):
+    mock_user = User(
+        email="test@example.com",
+        hashed_password="hashedpassword",
+        status=UserStatus.ACTIVE,
+    )
+    mock_user_service.get_user_by_email.return_value = mock_user
+    mock_hash_service.verify_password.return_value = True
+
+    user_signin = UserSignIn(email="test@example.com", password="password")
+    token = await sign_in_service.sign_in(user_signin)
+
+    assert token.access_token is not None
+    assert token.refresh_token is not None
+    mock_user_service.get_user_by_email.assert_called_once_with(user_signin.email)
+    mock_hash_service.verify_password.assert_called_once_with(user_signin.password, mock_user.hashed_password)
+
+@pytest.mark.asyncio
+async def test_sign_in_user_not_found(sign_in_service, mock_user_service):
+    mock_user_service.get_user_by_email.return_value = None
+
+    user_signin = UserSignIn(email="notfound@example.com", password="password")
+    with pytest.raises(UserNotFoundException):
+        await sign_in_service.sign_in(user_signin)
+
+    mock_user_service.get_user_by_email.assert_called_once_with(user_signin.email)
+
+@pytest.mark.asyncio
+async def test_sign_in_invalid_password(sign_in_service, mock_user_service, mock_hash_service):
+    mock_user = User(
+        email="test@example.com",
+        hashed_password="hashedpassword",
+        status=UserStatus.ACTIVE,
+    )
+    mock_user_service.get_user_by_email.return_value = mock_user
+    mock_hash_service.verify_password.return_value = False
+
+    user_signin = UserSignIn(email="test@example.com", password="wrongpassword")
+    with pytest.raises(InvalidPasswordException):
+        await sign_in_service.sign_in(user_signin)
+
+    mock_user_service.get_user_by_email.assert_called_once_with(user_signin.email)
+    mock_hash_service.verify_password.assert_called_once_with(user_signin.password, mock_user.hashed_password)
+
+@pytest.mark.asyncio
+async def test_sign_in_user_not_active(sign_in_service, mock_user_service):
+    mock_user = User(
+        email="test@example.com",
+        hashed_password="hashedpassword",
+        status=UserStatus.PENDING,
+    )
+    mock_user_service.get_user_by_email.return_value = mock_user
+
+    user_signin = UserSignIn(email="test@example.com", password="password")
+    with pytest.raises(UserStatusException):
+        await sign_in_service.sign_in(user_signin)
+
+    mock_user_service.get_user_by_email.assert_called_once_with(user_signin.email)
+Best Practices for Unit Tests:
+Isolation: Ensure that each test is independent of others by using mocking and fixtures.
+Descriptive Test Names: Use descriptive test names that clearly indicate what is being tested.
+Cover Edge Cases: Test for edge cases such as invalid inputs, exceptions, and boundary conditions.
+2.2. Writing Integration Tests
+Integration tests focus on testing how different components of your application work together. This typically involves testing FastAPI routes with real or mocked dependencies.
+
+Example: Testing the /auth/login Endpoint
+python
+Copy code
+import pytest
+from fastapi.testclient import TestClient
+from app.main import app
+
+client = TestClient(app)
+
+@pytest.mark.asyncio
+async def test_login_success(mocker):
+    mocker.patch("app.services.signin_service.SignInService.sign_in", return_value={"access_token": "access", "refresh_token": "refresh"})
+
+    response = client.post("/auth/login", data={"username": "test@example.com", "password": "password"})
+
+    assert response.status_code == 200
+    assert response.json() == {"access_token": "access", "refresh_token": "refresh"}
+
+@pytest.mark.asyncio
+async def test_login_invalid_credentials(mocker):
+    mocker.patch("app.services.signin_service.SignInService.sign_in", side_effect=InvalidPasswordException(email="test@example.com"))
+
+    response = client.post("/auth/login", data={"username": "test@example.com", "password": "wrongpassword"})
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid credentials"}
+Best Practices for Integration Tests:
+Test Full Routes: Test routes from end to end, including all middleware, dependencies, and request handling.
+Use a Test Client: FastAPI’s TestClient is a great way to simulate requests and verify responses.
+Mock External Dependencies: Use mocker to mock out any external services, databases, or other dependencies.
+3. Running Tests
+3.1. Running Tests with pytest
+To run your tests, simply use the following command:
+
+bash
+Copy code
+pytest
+You can also generate coverage reports to ensure that your tests are covering all parts of your code:
+
+bash
+Copy code
+pytest --cov=app tests/
+This will run all the tests in the tests/ directory and generate a coverage report for the app/ package.
+
+4. Continuous Integration
+To ensure your tests run automatically on every commit, set up Continuous Integration (CI) with a service like GitHub Actions, GitLab CI, or CircleCI.
+
+Example: GitHub Actions
+Create a .github/workflows/ci.yml file:
+
+yaml
+Copy code
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-asyncio httpx pytest-cov
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        pytest --cov=app
+    - name: Upload Coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage.xml
+5. Advanced Testing Scenarios
+5.1. Testing Database Interactions
+Use a separate test database or an in-memory database (like SQLite) to ensure that your tests do not affect the production database.
+
+Example: Using a Test Database
+python
+Copy code
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app.main import app
+from app.db.base import Base
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+@pytest.fixture(scope="function")
+def db():
+    Base.metadata.create_all(bind=engine)
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        Base.metadata.drop_all(bind=engine)
+
+@pytest.fixture(scope="function")
+def client(db):
+    def override_get_db():
+        try:
+            yield db
+        finally:
+            db.close()
+    app.dependency_overrides[get_db] = override_get_db
+    yield TestClient(app)
+    app.dependency_overrides.clear()
+
+def test_create_user(client):
+    response = client.post("/users/", json={"email": "test@example.com", "password": "password"})
+    assert response.status_code == 200
+    assert response.json()["email"] == "test@example.com"
+5.2. Testing Asynchronous Routes and Services
+Ensure that you’re using pytest-asyncio to test async functions:
+
+python
+Copy code
+@pytest.mark.asyncio
+async def test_async_function():
+    result = await some_async_function()
+    assert result == expected_value
+6. Best Practices Summary
+Keep Tests Isolated: Tests should not depend on each other or on any external state (e.g., a real database).
+Use Fixtures for Setup/Teardown: pytest fixtures are a great way to set up and tear down the state for your tests.
+Mock External Dependencies: Use mocking to isolate the code under test and avoid relying on external services.
+Focus on Readability: Tests should be easy to read and understand. Use descriptive test names and comments where necessary.
+Test Edge Cases: Ensure you’re testing edge cases, not just the happy paths.
+Continuous Integration: Use CI to run tests automatically on every commit to ensure that your code remains stable.
+Conclusion
+This guide provides a comprehensive overview of how to test a FastAPI application, covering unit testing, integration testing, and advanced scenarios like database interaction. By following these best practices, you can ensure that your application is robust, reliable, and easy to maintain.
+
+
+
+
+
+

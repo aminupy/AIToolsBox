@@ -20,9 +20,9 @@ class User(EntityBase):
         nullable=False,
         server_default=GUID_SERVER_DEFAULT_POSTGRESQL
     )
-    full_name = Column(String, nullable=False)
+    fullname = Column(String)
     email = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+    hashed_password = Column(String)
     status = Column(Enum(UserStatus), nullable=False, default=False)
-    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
-    updated_at = Column(TIMESTAMP(timezone=True), nullable=True, default=None, onupdate=func.now())
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), default=None, onupdate=func.now())

@@ -2,15 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from app.api.v1.routes.users import user_router
-from app.db.database import init_db
+from app.db import init_db
+from app.api import auth_router
 from app.core.logging.logger import configure_logger
+from app.core.config import get_settings
 
-
+config = get_settings()
 configure_logger()
-
 init_db()
-app = FastAPI()
+app = FastAPI(title=config.APP_NAME, version=config.APP_VERSION)
 
 origins = ["*"]
 
@@ -22,12 +22,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_router, prefix="/api/v1/users", tags=["users"])
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
 
 logger.info("IAM Service Started")
 
+
 @app.get("/")
 async def root():
-    return {"message": "Hello Dear !"}
-
-
+    return {"message": "Hello from IAM Service !"}
