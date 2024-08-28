@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Tuple
 from fastapi import Depends
 import hmac
 import hashlib
@@ -29,11 +29,11 @@ class TOTPGenerator:
         otp = binary % (10 ** self.digits)
         return otp
 
-    async def generate(self, user_identifier: str, timestamp: int = None) -> str:
+    async def generate(self, user_identifier: str, timestamp: int = None) -> tuple[str, int]:
         if timestamp is None:
             timestamp = int(time.time())
         counter = timestamp // self.interval
         hmac_hash = await self._generate_hmac(counter, user_identifier)
         otp = await self._truncate(hmac_hash)
-        return str(otp).zfill(self.digits)
+        return str(otp).zfill(self.digits), self.interval - (timestamp % self.interval)
 

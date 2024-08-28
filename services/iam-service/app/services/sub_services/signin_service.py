@@ -41,8 +41,8 @@ class SignInService(BaseService):
             logger.error(f"User with email {db_user.email} is not active")
             raise UserStatusException("User is not active")
 
-        is_valid = self.hash_service.verify_password(user_signin.password, db_user.hashed_password)
-        if not is_valid:
+        is_valid = await self.hash_service.verify_password(user_signin.password, db_user.hashed_password)
+        if is_valid is False:
             logger.error(f"Invalid password for email {db_user.email}")
             raise InvalidPasswordException(email=db_user.email)
 

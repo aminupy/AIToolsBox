@@ -1,4 +1,4 @@
-from typing import Annotated, Dict
+from typing import Annotated, Dict, Literal
 from uuid import UUID
 from loguru import logger
 from fastapi import Depends
@@ -7,11 +7,10 @@ from app.domain.models.user import User
 from app.domain.models.user_status import UserStatus
 from app.domain.schemas.user import UserFinalSignUp, UserInitialSignUp
 from app.infrastructure.repositories.user_repository import UserRepository
-from app.core.security import Hasher, hash_provider
-from app.services.base_service import BaseService
+from app.core.security import Hasher
 
 
-class UserService(BaseService):
+class UserService:
     def __init__(
         self,
         user_repository: Annotated[UserRepository, Depends()],
@@ -30,7 +29,7 @@ class UserService(BaseService):
             )
         )
 
-    async def finalize_user(self, user_id: int, final_user: UserFinalSignUp) -> User:
+    async def finalize_user(self, user_id: str, final_user: UserFinalSignUp) -> User:
         logger.info(f"Finalizing user with email {final_user.email}")
         finalized_user = {
             "fullname": final_user.fullname,
@@ -39,7 +38,14 @@ class UserService(BaseService):
         }
         return self.user_repository.update_user(user_id, updated_user=finalized_user)
 
-    async def update_user(self, user_id: int, update_fields: Dict) -> User:
+    async def update_user_status(self,
+                                 user_id: str,
+                                 status: Literal["unverified", "verified", "active", "inactive"]
+                                 ) -> User:
+        logger.info(f"Updating user {user_id} status to {status}")
+        return self.user_repository.update_user(user_id=user_id, updated_user={"status": UserStatus(status)})
+
+    async def update_user(self, user_id: str, update_fields: Dict) -> User:
         logger.info(f"Updating user with id {user_id}")
         return self.user_repository.update_user(user_id, update_fields)
 

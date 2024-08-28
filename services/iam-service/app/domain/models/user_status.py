@@ -3,6 +3,6 @@ from enum import Enum
 
 class UserStatus(str, Enum):
     UnVerified = "unverified"
-    PENDING = "pending"
+    Verified = "verified"
     ACTIVE = "active"
     INACTIVE = "inactive"

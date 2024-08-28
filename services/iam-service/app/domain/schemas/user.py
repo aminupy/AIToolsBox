@@ -15,6 +15,13 @@ class UserInitialSignUp(UserBase):
     pass
 
 
+class UserInitialSignUpResponse(UserBase):
+    email: EmailStr
+    status: UserStatus
+    created_at: datetime
+    message: str
+
+
 class UserFinalSignUp(UserBase):
     fullname: constr(min_length=1, max_length=50)
     password: constr(min_length=8, max_length=50)

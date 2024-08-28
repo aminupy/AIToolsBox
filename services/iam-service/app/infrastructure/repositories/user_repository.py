@@ -19,7 +19,7 @@ class UserRepository:
         logger.info(f"User {user.id} created")
         return user
 
-    def update_user(self, user_id: int, updated_user: Dict) -> User:
+    def update_user(self, user_id: str, updated_user: Dict) -> User:
         # Update user with the given id
         user_query = self.db.query(User).filter(User.id == user_id)
         db_user = user_query.first()

@@ -19,7 +19,7 @@ class TOTPVerifier:
         # Verify the OTP within the allowed time window
         for offset in range(-self.window, self.window + 1):
             counter = timestamp + offset * self.generator.interval
-            generated_otp = await self.generator.generate(user_identifier, counter)
+            generated_otp, expire_time = await self.generator.generate(user_identifier, counter)
             if hmac.compare_digest(generated_otp, otp):
                 return True
         return False
