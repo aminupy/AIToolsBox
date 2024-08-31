@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from app.db import init_db
-from app.api import auth_router
+from app.api import auth_router, users_router
 from app.core.logging.logger import configure_logger
 from app.core.config import get_settings
 
@@ -11,6 +11,7 @@ config = get_settings()
 configure_logger()
 init_db()
 app = FastAPI(title=config.APP_NAME, version=config.APP_VERSION)
+
 
 origins = ["*"]
 
@@ -22,7 +23,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(auth_router, prefix="/auth", tags=["Authentications"])
+app.include_router(users_router, prefix="/users", tags=["Users"])
+
 
 logger.info("IAM Service Started")
 

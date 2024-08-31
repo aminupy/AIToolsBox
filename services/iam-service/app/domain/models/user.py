@@ -18,7 +18,7 @@ class User(EntityBase):
         index=True,
         unique=True,
         nullable=False,
-        server_default=GUID_SERVER_DEFAULT_POSTGRESQL
+        server_default=GUID_SERVER_DEFAULT_POSTGRESQL,
     )
     fullname = Column(String)
     email = Column(String, unique=True, nullable=False)

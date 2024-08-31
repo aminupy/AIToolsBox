@@ -1,10 +1,7 @@
 from typing import Generator
-
-from fastapi import HTTPException
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from sqlalchemy_utils import database_exists, create_database
 from loguru import logger
 

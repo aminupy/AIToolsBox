@@ -9,10 +9,10 @@ from app.core.exceptions import OTPServiceException
 class OTPService:
 
     def __init__(
-            self,
-            generator: Annotated[OTPGenerator, Depends()],
-            verifier: Annotated[OTPVerifier, Depends()]
-            ):
+        self,
+        generator: Annotated[OTPGenerator, Depends()],
+        verifier: Annotated[OTPVerifier, Depends()],
+    ):
         super().__init__()
         self.generator = generator
         self.verifier = verifier
@@ -32,4 +32,3 @@ class OTPService:
             raise OTPServiceException(f"Invalid OTP for {email}")
         else:
             return True
-

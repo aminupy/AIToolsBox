@@ -1,21 +1,44 @@
-from fastapi import Depends, status, APIRouter
-from fastapi.security import OAuth2PasswordRequestForm
-from typing import Annotated
-from loguru import logger
+from typing import Annotated, Dict
+from uuid import UUID
+from fastapi import APIRouter, Depends, status
 
-from app.domain.schemas.user import (
-    UserResponse
-)
+from app.api.v1.controllers.user_controller import UserController
 from app.api.v1.dependencies import get_current_user
-
-user_router = APIRouter()
-
-
-@user_router.get(
-    "/me",
-    response_model=UserResponse,
-    status_code=status.HTTP_200_OK
+from app.domain.schemas.user import (
+    UserResponse,
+    UserInitialSignUpResponse,
+    UserInitialSignUp,
+    UserFinalSignUp,
 )
-async def read_users_me(current_user: UserResponse = Depends(get_current_user)) -> UserResponse:
-    logger.info(f"Getting user with email {current_user.email}")
+
+users_router = APIRouter()
+UserControllerDep = Annotated[UserController, Depends()]
+
+
+@users_router.post(
+    "/register/",
+    response_model=UserInitialSignUpResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def initialize_register(
+    user: UserInitialSignUp, user_controller: UserControllerDep
+) -> UserInitialSignUpResponse:
+    return await user_controller.initialize_signup(user)
+
+
+@users_router.put(
+    "/register/{user_id}/",
+    response_model=Dict[str, str],
+    status_code=status.HTTP_200_OK,
+)
+async def finalize_register(
+    user_id: UUID, user: UserFinalSignUp, user_controller: UserControllerDep
+) -> Dict[str, str]:
+    return await user_controller.finalize_signup(user_id, user)
+
+
+@users_router.get("/me", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def me(
+    current_user: Annotated[UserResponse, Depends(get_current_user)]
+) -> UserResponse:
     return current_user

@@ -22,11 +22,15 @@ def configure_logger():
     logger.add("logs/iam_service_error.log", level="ERROR", **json_logging_format)
 
     # Custom log format for console and stderr
-    log_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:" \
-                 "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    log_format = (
+        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:"
+        "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    )
 
     # Add console logging
     logger.add(sys.stdout, level="INFO", format=log_format)
 
     # Add stderr logging
-    logger.add(sys.stderr, level="ERROR", backtrace=True, diagnose=True, format=log_format)
+    logger.add(
+        sys.stderr, level="ERROR", backtrace=True, diagnose=True, format=log_format
+    )

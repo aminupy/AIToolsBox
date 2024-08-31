@@ -1,8 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-
 from loguru import logger
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -25,7 +23,7 @@ class Settings(BaseSettings):
     OTP_DIGITS: int
     OTP_EXPIRE_SECONDS: int
 
-    model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
+    # model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
 
 
 @lru_cache

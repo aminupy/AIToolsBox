@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
-
-from pydantic import BaseModel, Field, EmailStr, constr
+from pydantic import BaseModel, EmailStr, constr
 
 from app.domain.models.user_status import UserStatus
 
@@ -16,7 +15,7 @@ class UserInitialSignUp(UserBase):
 
 
 class UserInitialSignUpResponse(UserBase):
-    email: EmailStr
+    user_id: UUID
     status: UserStatus
     created_at: datetime
     message: str
@@ -39,7 +38,7 @@ class UserProfileUpdate(BaseModel):
 
 class UserResponse(UserBase):
     id: UUID
-    full_name: str
+    fullname: str
     status: UserStatus
     created_at: datetime
     updated_at: Optional[datetime]

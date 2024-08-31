@@ -23,10 +23,7 @@ class UserService:
     async def initialize_user(self, initial_user: UserInitialSignUp):
         logger.info(f"Initializing user with email {initial_user.email}")
         return self.user_repository.create_user(
-            User(
-                email=initial_user.email,
-                status=UserStatus.UnVerified
-            )
+            User(email=initial_user.email, status=UserStatus.UnVerified)
         )
 
     async def finalize_user(self, user_id: str, final_user: UserFinalSignUp) -> User:
@@ -34,16 +31,19 @@ class UserService:
         finalized_user = {
             "fullname": final_user.fullname,
             "hashed_password": await self.hasher.hash_password(final_user.password),
-            "status": UserStatus.ACTIVE
+            "status": UserStatus.ACTIVE,
         }
         return self.user_repository.update_user(user_id, updated_user=finalized_user)
 
-    async def update_user_status(self,
-                                 user_id: str,
-                                 status: Literal["unverified", "verified", "active", "inactive"]
-                                 ) -> User:
+    async def update_user_status(
+        self,
+        user_id: str,
+        status: Literal["unverified", "verified", "active", "inactive"],
+    ) -> User:
         logger.info(f"Updating user {user_id} status to {status}")
-        return self.user_repository.update_user(user_id=user_id, updated_user={"status": UserStatus(status)})
+        return self.user_repository.update_user(
+            user_id=user_id, updated_user={"status": UserStatus(status)}
+        )
 
     async def update_user(self, user_id: str, update_fields: Dict) -> User:
         logger.info(f"Updating user with id {user_id}")

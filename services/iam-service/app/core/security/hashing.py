@@ -39,8 +39,8 @@ class Hasher:
         Returns:
             str: A base32 encoded secret key.
         """
-        secret = base64.b32encode(base64.b64encode(os.urandom(length))).decode('utf-8')
-        return secret.rstrip('=')
+        secret = base64.b32encode(base64.b64encode(os.urandom(length))).decode("utf-8")
+        return secret.rstrip("=")
 
 
 @logger.catch

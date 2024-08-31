@@ -1,15 +1,9 @@
-from typing import Annotated
-from loguru import logger
-from fastapi import Depends, HTTPException, status
-from app.core.exceptions import (
-    UserAlreadyExistsException,
-    OTPServiceException,
-    UserNotFoundException,
-    UserStatusException, InvalidPasswordException
-)
+from typing import Annotated, Dict
+from fastapi.security import OAuth2PasswordRequestFormStrict
+from fastapi import Depends, Response
+
 from app.domain.schemas.otp import OTPResponse, OTPVerifyRequest, OTPVerifyResponse
 from app.domain.schemas.token import Token
-from app.domain.schemas.user import UserInitialSignUp, UserFinalSignUp, UserSignIn, UserInitialSignUpResponse
 from app.utilites import handle_exceptions
 from app.services import AuthService
 
@@ -19,16 +13,45 @@ class AuthController:
         self.auth_service = auth_service
 
     @handle_exceptions
-    async def initialize_signup(self, user: UserInitialSignUp) -> UserInitialSignUpResponse:
-        return await self.auth_service.initialize_signup(user)
+    async def __set_cookies(self, response: Response, tokens: Token):
+        response.set_cookie(
+            key="access_token",
+            value=tokens.access_token,
+            httponly=True,
+            secure=True,
+            samesite="strict",
+            max_age=tokens.access_token_expires,
+        )
+
+        # Set the refresh token as an HTTP-only, Secure cookie
+        response.set_cookie(
+            key="refresh_token",
+            value=tokens.refresh_token,
+            httponly=True,
+            secure=True,
+            samesite="strict",
+            max_age=tokens.refresh_token_expires,
+        )
 
     @handle_exceptions
-    async def finalize_signup(self, user: UserFinalSignUp) -> Token:
-        return await self.auth_service.finalize_signup(user)
+    async def signin(
+        self, credentials: OAuth2PasswordRequestFormStrict, response: Response
+    ) -> Dict[str, str]:
+        tokens = await self.auth_service.signin(credentials)
+        await self.__set_cookies(response, tokens)
+
+        return {
+            "message": "User signed in successfully",
+        }
 
     @handle_exceptions
-    async def signin(self, user: UserSignIn) -> Token:
-        return await self.auth_service.signin(user)
+    async def refresh_token(
+        self, refresh_token: str, response: Response
+    ) -> Dict[str, str]:
+        tokens = await self.auth_service.refresh_token(refresh_token)
+        await self.__set_cookies(response, tokens)
+
+        return {"message": "Token refreshed successfully"}
 
     @handle_exceptions
     async def send_otp(self, email: str) -> OTPResponse:
