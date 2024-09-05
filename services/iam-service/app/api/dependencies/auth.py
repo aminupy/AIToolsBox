@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 
 from app.core.security import TokenManager
 from app.services import UserService
-from app.utilites.fastapi_utils import OAuth2PasswordBearerWithCookie
+from app.utils.fastapi_utils import OAuth2PasswordBearerWithCookie
 from app.domain.schemas.user import UserResponse
 
 

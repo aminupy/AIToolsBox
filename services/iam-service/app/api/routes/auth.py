@@ -8,8 +8,8 @@ from app.domain.schemas.otp import (
     OTPRequest,
     OTPVerifyResponse,
 )
-from app.api.v1.controllers.auth_controller import AuthController
-from app.utilites.fastapi_utils import OAuth2PasswordBearerWithCookie
+from app.api.controllers.auth_controller import AuthController
+from app.utils.fastapi_utils import OAuth2PasswordBearerWithCookie
 
 auth_router = APIRouter()
 AuthControllerDep = Annotated[AuthController, Depends()]

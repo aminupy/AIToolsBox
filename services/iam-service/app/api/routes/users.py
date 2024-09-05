@@ -2,8 +2,8 @@ from typing import Annotated, Dict
 from uuid import UUID
 from fastapi import APIRouter, Depends, status
 
-from app.api.v1.controllers.user_controller import UserController
-from app.api.v1.dependencies import get_current_user
+from app.api.controllers.user_controller import UserController
+from app.api.dependencies import get_current_user
 from app.domain.schemas.user import (
     UserResponse,
     UserInitialSignUpResponse,

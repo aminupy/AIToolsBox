@@ -8,7 +8,7 @@ from app.domain.schemas.user import (
     UserFinalSignUp,
 )
 from app.services import UserService, SignUpService
-from app.utilites.decorators import handle_exceptions
+from app.utils.decorators import handle_exceptions
 
 
 class UserController:

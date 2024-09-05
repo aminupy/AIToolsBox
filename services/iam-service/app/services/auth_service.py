@@ -13,7 +13,7 @@ from app.services.otp_service import OTPService
 from app.services.user_service import UserService
 from app.services.signin_service import SignInService
 from app.core.security import TokenManager
-from app.utilites.user_utils import get_existing_user
+from app.utils.user_utils import get_existing_user
 
 
 class AuthService:

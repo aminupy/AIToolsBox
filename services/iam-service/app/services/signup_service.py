@@ -13,7 +13,7 @@ from app.domain.schemas.user import (
 )
 from app.services import OTPService
 from app.services.user_service import UserService
-from app.utilites.user_utils import get_existing_user_by_id, ensure_user_does_not_exist
+from app.utils.user_utils import get_existing_user_by_id, ensure_user_does_not_exist
 
 
 class SignUpService:

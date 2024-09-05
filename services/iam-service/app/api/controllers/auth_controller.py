@@ -4,7 +4,7 @@ from fastapi import Depends, Response
 
 from app.domain.schemas.otp import OTPResponse, OTPVerifyRequest, OTPVerifyResponse
 from app.domain.schemas.token import Token
-from app.utilites import handle_exceptions
+from app.utils import handle_exceptions
 from app.services import AuthService
 
 
