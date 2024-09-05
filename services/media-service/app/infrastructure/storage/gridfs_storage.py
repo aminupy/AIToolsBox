@@ -1,4 +1,3 @@
-import asyncio
 from typing import Annotated
 from loguru import logger
 from bson import ObjectId
@@ -9,7 +8,7 @@ from motor.motor_asyncio import (
     AsyncIOMotorGridOut,
 )
 
-from app.core.db.database import get_db, db
+from app.db import get_db
 
 
 class GridFsStorage:

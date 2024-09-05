@@ -2,12 +2,12 @@ from concurrent import futures
 from loguru import logger
 import grpc
 from app.core.config import get_settings
-from app.grpc_service import media_pb2_grpc, media_pb2
+from app.grpc import media_pb2_grpc, media_pb2
 from app.infrastructure.clients.iam_client import IAMClient
 from app.services.media_service import MediaService
 from app.infrastructure.repositories.media_repository import MediaRepository
 from app.infrastructure.storage.gridfs_storage import GridFsStorage
-from app.core.db.database import db
+from app.db.database import db
 
 
 config = get_settings()

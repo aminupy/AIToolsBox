@@ -8,8 +8,8 @@ from typing import Annotated, Generator, Callable, Any, Tuple
 from fastapi import Depends, UploadFile, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorGridOut
 
-from app.domain.models.media_model import MediaGridFSModel
-from app.domain.schemas.media_schema import MediaSchema
+from app.domain.models.media import MediaGridFSModel
+from app.domain.schemas.media import MediaResponse
 from app.infrastructure.repositories.media_repository import MediaRepository
 from app.infrastructure.storage.gridfs_storage import GridFsStorage
 
@@ -23,21 +23,21 @@ class MediaService:
         self.media_repository = media_repository
         self.storage = storage
 
-    async def create_media(self, file: UploadFile, user_id: str) -> MediaSchema:
+    async def create_media(self, file: UploadFile, user_id: str) -> MediaResponse:
         storage_id = await self.storage.save_file(file)
         media = MediaGridFSModel(
             storage_id=storage_id,
-            filename=file.filename,
-            content_type=file.content_type,
+            name=file.filename,
+            type=file.content_type,
             size=file.size,
             user_id=user_id,
         )
         await self.media_repository.create_media(media)
-        logger.info(f"Media {media.filename} created")
-        return MediaSchema(
-            mongo_id=str(media.mongo_id),
-            filename=media.filename,
-            content_type=media.content_type,
+        logger.info(f"Media {media.name} created")
+        return MediaResponse(
+            id=str(media.id),
+            name=media.name,
+            type=media.type,
             size=media.size,
             upload_date=media.upload_date,
             user_id=media.user_id,
@@ -53,11 +53,11 @@ class MediaService:
         if media.user_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="User does not have permission to access this media",
+                detail="TokenUser does not have permission to access this media",
             )
         file = await self.storage.get_file(media.storage_id)
 
-        logger.info(f"Media {media.filename} retrieved")
+        logger.info(f"Media {media.name} retrieved")
 
         return media, file
 
@@ -69,11 +69,11 @@ class MediaService:
         def file_stream():
             yield file
 
-        logger.info(f"Retrieving media file {media.filename}")
+        logger.info(f"Retrieving media file {media.name}")
         return (
             MediaSchema(
-                mongo_id=media.mongo_id,
-                filename=media.filename,
+                id=media.id,
+                name=media.name,
                 content_type=media.content_type,
                 size=media.size,
                 upload_date=media.upload_date,
