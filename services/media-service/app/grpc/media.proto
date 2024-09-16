@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package media;
+
+// Enum to define supported media types
+enum MediaType {
+  UNKNOWN = 0;
+  IMAGE = 1;
+  VIDEO = 2;
+  AUDIO = 3;
+}
+
+// MediaService with server-side streaming for efficient media transfer
+service MediaService {
+  rpc DownloadMedia (MediaRequest) returns (stream MediaResponse);
+}
+
+// Request message to specify the media to be downloaded
+message MediaRequest {
+  string media_id = 1;         // Unique identifier for the media
+  MediaType media_type = 2;    // Enum for media type
+  // Reserved fields for future use to avoid conflicts during updates
+  reserved 3, 4, 5;
+}
+
+// Response message for streaming media data
+message MediaResponse {
+  bytes media_data = 1;        // Chunk of media data
+  MediaType media_type = 2;    // Media type of the chunk
+  int32 status_code = 3;       // Status code for error handling (e.g., 200, 404, 500)
+  string error_message = 4;    // Error message if an error occurs
+  string checksum = 5;         // Optional checksum for data integrity verification
+  // Reserved fields for future use to avoid conflicts during updates
+  reserved 6, 7, 8;
+}
+
+// Standard error message structure for handling various error scenarios
+message Error {
+  int32 code = 1;              // Error code
+  string message = 2;          // Error description
+}
