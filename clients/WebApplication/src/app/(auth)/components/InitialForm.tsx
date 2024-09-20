@@ -10,6 +10,9 @@ import useUserStore from "@/lib/store/userStore";
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import { SignUpState } from "@/types";
+import useRegisterUser from "../signup/hooks/useRegisterUser";
+import useOTPRequest from "../signup/hooks/useOTPRequest";
+import axios from "axios";
 
 type Inputs = {
   email: string;
@@ -21,7 +24,7 @@ interface FormProps {
   setSignUpState?: Dispatch<SetStateAction<SignUpState>>;
 }
 
-export default function InitalForm({ setSignUpState, formName }: FormProps) {
+export default function InitialForm({ setSignUpState, formName }: FormProps) {
   const { setEmail } = useUserStore();
   const router = useRouter();
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -35,6 +38,16 @@ export default function InitalForm({ setSignUpState, formName }: FormProps) {
     reset,
     formState: { errors },
   } = useForm<Inputs>();
+
+  const {
+    mutate: registerUser,
+    isPending: isLoading,
+    isError,
+    isSuccess,
+    error,
+  } = useRegisterUser();
+
+  const { mutate: otpRequest } = useOTPRequest();
 
   const handleEmailChange = () => {
     setIsEmailValid(false);
@@ -53,9 +66,6 @@ export default function InitalForm({ setSignUpState, formName }: FormProps) {
     }
     setEmail(email);
     setIsEmailValid(true);
-    if (formName == "signup") {
-      setSignUpState!("email-verification");
-    }
   };
 
   const checkPassword = (password: string) => {
@@ -73,21 +83,35 @@ export default function InitalForm({ setSignUpState, formName }: FormProps) {
     return true;
   };
 
-  const onSubmit: SubmitHandler<Inputs> = (data: any) => {
-    const { email, password } = data;
+  const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
+    const { email: email_input, password: password_input } = data;
 
     if (!isEmailValid) {
-      checkEmail(email);
-      return;
+      checkEmail(email_input);
+      if (formName == "login") return;
     }
 
     if (formName === "login") {
       if (!isPasswordValid) {
-        if (!checkPassword(password)) return;
+        if (!checkPassword(password_input)) return;
       }
       router.push("/");
     } else if (formName === "signup") {
-      setSignUpState!("email-verification");
+      registerUser(email_input, {
+        onSuccess: async () => {
+          setSignUpState!("email-verification");
+          otpRequest(email_input);
+        },
+        onError: (error) => {
+          setIsEmailValid(false);
+          if (axios.isAxiosError(error)) {
+            setError("email", {
+              type: "manual",
+              message: error.response?.data.detail,
+            });
+          }
+        },
+      });
     }
   };
 
@@ -157,7 +181,14 @@ export default function InitalForm({ setSignUpState, formName }: FormProps) {
           </div>
         )}
       </div>
-      <Button className="h-14 w-full bg-gradient-90">Continue</Button>
+      <Button
+        className="h-14 w-full bg-gradient-90"
+        type="submit"
+        disabled={isLoading}
+      >
+        {isLoading ? "Registering..." : "Continue"}
+      </Button>
+
       <p className="font-semibold text-sm mx-auto">
         {formName === "signup"
           ? "Already have an account?"
