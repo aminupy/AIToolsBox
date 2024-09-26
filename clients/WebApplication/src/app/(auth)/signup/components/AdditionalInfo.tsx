@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SignUpState } from "@/types";
+import useUserStore from "@/lib/store/userStore";
 
 interface AdditionalInfoProps {
-  setSignUpState?: Dispatch<SetStateAction<SignUpState>>;
+  setSignUpState: Dispatch<SetStateAction<SignUpState>>;
 }
 
 type Inputs = {
@@ -17,6 +18,8 @@ type Inputs = {
 export default function AdditionalInfo({
   setSignUpState,
 }: AdditionalInfoProps) {
+  const { setFirstName, setLastName } = useUserStore();
+
   const {
     register,
     handleSubmit,
@@ -45,7 +48,10 @@ export default function AdditionalInfo({
       return;
     }
 
-    setSignUpState && setSignUpState("password");
+    setFirstName(firstName);
+    setLastName(lastName);
+
+    setSignUpState("password");
   };
 
   return (

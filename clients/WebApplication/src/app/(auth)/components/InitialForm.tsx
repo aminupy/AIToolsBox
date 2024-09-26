@@ -25,7 +25,7 @@ interface FormProps {
 }
 
 export default function InitialForm({ setSignUpState, formName }: FormProps) {
-  const { setEmail } = useUserStore();
+  const { setEmail, setUserId } = useUserStore();
   const router = useRouter();
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -39,10 +39,7 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const {
-    mutate: registerUser,
-    isPending: isLoading,
-  } = useRegisterUser();
+  const { mutate: registerUser, isPending: isLoading } = useRegisterUser();
 
   const { mutate: otpRequest } = useOTPRequest();
 
@@ -95,9 +92,11 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
       router.push("/");
     } else if (formName === "signup") {
       registerUser(email_input, {
-        onSuccess: async () => {
+        onSuccess: async (response) => {
+          console.log(response.data.user_id);
           setSignUpState!("email-verification");
           otpRequest(email_input);
+          setUserId(response.data.user_id);
         },
         onError: (error) => {
           setIsEmailValid(false);

@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useState } from "react";
+import useAdditionalInfo from "../hooks/useAdditionalInfo";
+import useUserStore from "@/lib/store/userStore";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   password: string;
@@ -12,6 +15,7 @@ type Inputs = {
 };
 
 export default function Password() {
+  const { userId, email, firstName, lastName } = useUserStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
@@ -26,6 +30,10 @@ export default function Password() {
     setError,
     formState: { errors },
   } = useForm<Inputs>();
+
+  const { mutate: setAdditionalInfo } = useAdditionalInfo();
+
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const { password, confirmPassword } = data;
@@ -57,6 +65,19 @@ export default function Password() {
     }
 
     console.log("Password created:", data);
+    console.log("User Info:", { userId, email, fullName: firstName + " " + lastName });
+    setAdditionalInfo(
+      { userId, email, fullName: firstName + " " + lastName, password },
+      {
+        onSuccess: () => {
+          console.log("Additional Info set successfully");
+          router.push("/");
+        },
+        onError: (err) => {
+          console.log("verification failed", err);
+        },
+      }
+    );
   };
 
   return (
