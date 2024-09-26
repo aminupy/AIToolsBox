@@ -25,6 +25,7 @@ class OCRService:
     async def process_image(self, ocr_create: OCRCreateRequest, user_id: str) -> OCRCreateResponse:
         image_data = await self.media_client.request_media(ocr_create.image_id, 'image', user_id)
         image = Image.open(BytesIO(image_data))
+        preprocessed_image = 
         extracted_text = pytesseract.image_to_string(image)
 
         ocr_result = OCRModel(
