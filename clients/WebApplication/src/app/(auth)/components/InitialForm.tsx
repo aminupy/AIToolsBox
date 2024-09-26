@@ -42,9 +42,6 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
   const {
     mutate: registerUser,
     isPending: isLoading,
-    isError,
-    isSuccess,
-    error,
   } = useRegisterUser();
 
   const { mutate: otpRequest } = useOTPRequest();

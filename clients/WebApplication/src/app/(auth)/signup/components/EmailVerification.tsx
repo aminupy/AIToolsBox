@@ -5,6 +5,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import useUserStore from "@/lib/store/userStore";
 import { Dispatch, SetStateAction } from "react";
 import { SignUpState } from "@/types";
+import useVerifyOTP from "../hooks/useVerifyOTP";
 
 import {
   InputOTP,
@@ -25,15 +26,27 @@ export default function EmailVerification({
   const handleOtpChange = (value: string) => {
     setOtp(value);
     if (value.length === 6) {
-      verifyOtp(value);
+      verify(value);
     }
   };
 
-  const verifyOtp = (otp: string) => {
-    console.log("Verifying OTP:", otp);
-    if (otp === "123456") {
-      setSignUpState("additional-info");
-    }
+  const {
+    mutate: verifyOTP,
+  } = useVerifyOTP();
+
+  const verify = (otp: string) => {
+    verifyOTP(
+      { email, otp },
+      {
+        onSuccess: () => {
+          console.log("OTP verification succeeded");
+          setSignUpState("additional-info");
+        },
+        onError: (err) => {
+          console.log("OTP verification failed", err);
+        },
+      }
+    );
   };
 
   return (
