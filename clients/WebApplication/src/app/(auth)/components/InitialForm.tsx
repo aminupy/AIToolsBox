@@ -10,9 +10,11 @@ import useUserStore from "@/lib/store/userStore";
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import { SignUpState } from "@/types";
-import useRegisterUser from "../signup/hooks/useRegisterUser";
-import useOTPRequest from "../signup/hooks/useOTPRequest";
+import useRegisterUser from "./hooks/useRegisterUser";
+import useOTPRequest from "./hooks/useOTPRequest";
+import useLogin from "./hooks/useLogin";
 import axios from "axios";
+import { log } from "console";
 
 type Inputs = {
   email: string;
@@ -42,6 +44,8 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
   const { mutate: registerUser, isPending: isLoading } = useRegisterUser();
 
   const { mutate: otpRequest } = useOTPRequest();
+
+  const { mutate: login } = useLogin();
 
   const handleEmailChange = () => {
     setIsEmailValid(false);
@@ -86,10 +90,20 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
     }
 
     if (formName === "login") {
-      if (!isPasswordValid) {
-        if (!checkPassword(password_input)) return;
+      if (password_input) {
+        login(
+          { email: email_input, password: password_input },
+          {
+            onSuccess: () => router.push("/"),
+          }
+        );
+      } else {
+        setError("password", {
+          type: "manual",
+          message: "Password is required",
+        });
       }
-      router.push("/");
+      //TODO check if password has provided
     } else if (formName === "signup") {
       registerUser(email_input, {
         onSuccess: async (response) => {
