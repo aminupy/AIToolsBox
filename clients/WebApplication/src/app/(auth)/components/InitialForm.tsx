@@ -14,7 +14,6 @@ import useRegisterUser from "./hooks/useRegisterUser";
 import useOTPRequest from "./hooks/useOTPRequest";
 import useLogin from "./hooks/useLogin";
 import axios from "axios";
-import { log } from "console";
 
 type Inputs = {
   email: string;
@@ -30,7 +29,6 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
   const { setEmail, setUserId } = useUserStore();
   const router = useRouter();
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const handleVisibility = () => setIsVisible(!isVisible);
   const {
@@ -52,7 +50,8 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
     reset({ password: "" });
   };
 
-  const checkEmail = (email: string) => {
+
+  const checkEmail = (email: string): boolean => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       setError("email", {
@@ -60,68 +59,53 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
         message: "Please enter a valid email address.",
       });
       setIsEmailValid(false);
-      return;
+      return false;
     }
     setEmail(email);
     setIsEmailValid(true);
-  };
-
-  const checkPassword = (password: string) => {
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
-    if (!passwordPattern.test(password)) {
-      setError("password", {
-        type: "manual",
-        message:
-          "Password must be at least 8 characters long and contain at least one letter and one number",
-      });
-      setIsPasswordValid(false);
-      return false;
-    }
-    setIsPasswordValid(true);
     return true;
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
     const { email: email_input, password: password_input } = data;
 
-    if (!isEmailValid) {
-      checkEmail(email_input);
-      if (formName == "login") return;
-    }
+    const emailIsValid = checkEmail(email_input);
+    if (formName == "login") return;
 
-    if (formName === "login") {
-      if (password_input) {
-        login(
-          { email: email_input, password: password_input },
-          {
-            onSuccess: () => router.push("/"),
-          }
-        );
-      } else {
-        setError("password", {
-          type: "manual",
-          message: "Password is required",
+    if (emailIsValid) {
+      if (formName === "login") {
+        if (password_input) {
+          login(
+            { email: email_input, password: password_input },
+            {
+              onSuccess: () => router.push("/"),
+            }
+          );
+        } else {
+          setError("password", {
+            type: "manual",
+            message: "Password is required",
+          });
+        }
+      } else if (formName === "signup") {
+        registerUser(email_input, {
+          onSuccess: async (response) => {
+            console.log(response.data.user_id);
+            setSignUpState!("email-verification");
+            otpRequest(email_input);
+            setUserId(response.data.user_id);
+          },
+          onError: (error) => {
+            setIsEmailValid(false);
+            if (axios.isAxiosError(error)) {
+              setError("email", {
+                type: "manual",
+                message: error.response?.data.detail,
+              });
+            }
+          },
         });
       }
-      //TODO check if password has provided
-    } else if (formName === "signup") {
-      registerUser(email_input, {
-        onSuccess: async (response) => {
-          console.log(response.data.user_id);
-          setSignUpState!("email-verification");
-          otpRequest(email_input);
-          setUserId(response.data.user_id);
-        },
-        onError: (error) => {
-          setIsEmailValid(false);
-          if (axios.isAxiosError(error)) {
-            setError("email", {
-              type: "manual",
-              message: error.response?.data.detail,
-            });
-          }
-        },
-      });
     }
   };
 
@@ -134,7 +118,7 @@ export default function InitialForm({ setSignUpState, formName }: FormProps) {
         <div>
           <div className="relative">
             <Input
-              type="email"
+              type="text"
               placeholder="Email Address"
               className={`h-14 ${errors.email ? "border-red-600" : ""}`}
               readOnly={isEmailValid && formName === "login"}

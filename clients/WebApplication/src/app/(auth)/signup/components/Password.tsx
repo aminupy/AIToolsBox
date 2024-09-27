@@ -16,6 +16,7 @@ type Inputs = {
 
 export default function Password() {
   const { userId, email, firstName, lastName } = useUserStore();
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
@@ -26,7 +27,6 @@ export default function Password() {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { errors },
   } = useForm<Inputs>();
@@ -34,6 +34,21 @@ export default function Password() {
   const { mutate: setAdditionalInfo } = useAdditionalInfo();
 
   const router = useRouter();
+
+  const checkPassword = (password: string) => {
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+    if (!passwordPattern.test(password)) {
+      setError("password", {
+        type: "manual",
+        message:
+          "Password must be at least 8 characters long and contain at least one letter and one number",
+      });
+      setIsPasswordValid(false);
+      return false;
+    }
+    setIsPasswordValid(true);
+    return true;
+  };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const { password, confirmPassword } = data;
@@ -64,13 +79,14 @@ export default function Password() {
       return;
     }
 
-    console.log("Password created:", data);
-    console.log("User Info:", { userId, email, fullName: firstName + " " + lastName });
+    if (!checkPassword(password)) {
+      return;
+    }
+
     setAdditionalInfo(
       { userId, email, fullName: firstName + " " + lastName, password },
       {
         onSuccess: () => {
-          console.log("Additional Info set successfully");
           router.push("/");
         },
         onError: (err) => {
