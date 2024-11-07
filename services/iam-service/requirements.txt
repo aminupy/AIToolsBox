@@ -15,3 +15,5 @@ passlib[bcrypt]
 bcrypt==4.0.1
 sqlalchemy-utils
 loguru
+pytest
+pytest_asyncio
