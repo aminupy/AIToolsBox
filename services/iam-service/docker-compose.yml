@@ -53,8 +53,24 @@ services:
       context: ../services/iam-service
       dockerfile: Dockerfile
     container_name: iam_service
-    env_file:
-      - ../services/iam-service/app/core/.env
+    environment:
+      - APP_NAME='IAM Serivce'
+      - APP_VERSION=V1.0.0
+      - DATABASE_DIALECT=postgresql+psycopg2
+      - DATABASE_HOSTNAME=postgres_container
+      - DATABASE_NAME=IAM-DB
+      - DATABASE_PASSWORD=admin
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DEBUG_MODE=False
+      - REDIS_URL=localhost
+      - JWT_SECRET_KEY=1807372bcbf0963ebe30a1df3669690b8f0e4f83a1b52e7579cfee9ff08db230
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+      - OTP_EXPIRE_SECONDS=60
+      - OTP_SECRET_KEY=MJWE6M2LG5GE2R2VGBXDQTBPKQ4EQUKOOFIT2PI
+      - OTP_DIGITS=6
 
 #    ports:
 #      - "80:80"
