@@ -111,9 +111,3 @@ Contributions are welcome! To contribute, follow these steps:
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-
-## Contact
-If you have any questions or suggestions, feel free to reach out to me at:
-- Email: esaminu.py@gmail.com
-- LinkedIn: [linkedin.com/aminupy](www.linkedin.com/in/mohamadamin-eskandari-28377b225)
-- GitHub: [github.com/aminupy](https://github.com/aminupy)
